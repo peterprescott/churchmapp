@@ -8,7 +8,9 @@ api = Api(app)
 
 from resources import TodoListResource
 from resources import TodoResource
+from resources import ConverterResource
 
+api.add_resource(ConverterResource, '/convert/<string:postcode>', endpoint='coords')
 api.add_resource(TodoListResource, '/todos', endpoint='todos')
 api.add_resource(TodoResource, '/todos/<string:id>', endpoint='todo')
 

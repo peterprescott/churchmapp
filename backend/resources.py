@@ -1,5 +1,5 @@
 
-from models import Todo
+from models import Todo, Converter
 from db import session
 
 from flask_restful import reqparse
@@ -14,8 +14,23 @@ todo_fields = {
     'uri': fields.Url('todo', absolute=True),
 }
 
+converter_fields = {
+    'id': fields.Integer,
+    'postcode': fields.String,
+    'latitude': fields.Float,
+    'longitude': fields.Float
+}
+
 parser = reqparse.RequestParser()
 parser.add_argument('task', type=str)
+
+class ConverterResource(Resource):
+    @marshal_with(converter_fields)
+    def get(self, postcode):
+        coords = session.query(Converter).filter(Converter.postcode == postcode).first()
+        if not coords:
+            abort(404, message=f"{postcode} does not appear to be a valid postcode.")
+        return coords
 
 class TodoResource(Resource):
     @marshal_with(todo_fields)
