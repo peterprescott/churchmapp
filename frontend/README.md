@@ -1,4 +1,4 @@
-# vue-app
+# frontend
 
 ## Project setup
 ```
@@ -23,6 +23,11 @@ yarn run test
 ### Lints and fixes files
 ```
 yarn run lint
+```
+
+### Run your unit tests
+```
+yarn run test:unit
 ```
 
 ### Customize configuration
