@@ -57,7 +57,7 @@ import { latLng } from "leaflet";
 import { LMap, LTileLayer, LMarker, LPopup, LTooltip } from "vue2-leaflet";
 
 export default {
-  name: "Example",
+  name: "LeafletMap",
   components: {
     LMap,
     LTileLayer,
@@ -99,4 +99,3 @@ export default {
   }
 };
 </script>
-
