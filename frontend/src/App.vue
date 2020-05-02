@@ -1,8 +1,23 @@
 <template>
   <div id="app">
-   <router-view/>
+    <h1>App</h1>
+    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <DemoComponent />
   </div>
 </template>
+
+<script>
+import HelloWorld from './components/HelloWorld.vue'
+import DemoComponent from './components/DemoComponent.vue'
+
+export default {
+  name: 'App',
+  components: {
+    HelloWorld,
+    DemoComponent
+  }
+}
+</script>
 
 <style>
 #app {
@@ -11,18 +26,6 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
+  margin-top: 60px;
 }
 </style>
