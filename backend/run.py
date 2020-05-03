@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
-from flask import Flask
+from flask import Flask, request
 from flask_restful import Api, Resource
 from flask_cors import CORS
 import git
+import os.path
 
 app = Flask(__name__)
 CORS(app)
@@ -26,7 +27,7 @@ api.add_resource(TodoResource, '/todos/<string:id>', endpoint='todo')
 @app.route('/git', methods=['POST'])
 def webhook():
     if request.method == 'POST':
-        repo = git.Repo('https://github.com/peterprescott/flask-vue-app')
+        repo = git.Repo(os.path.join('..'))
         origin = repo.remotes.origin
         origin.pull()
         return 'Updated PythonAnywhere successfully', 200
