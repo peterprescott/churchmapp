@@ -36,8 +36,8 @@ def webhook():
 
 @app.route('/test')
 def test_python_anywhere():
-    # yet again
-    return 'success'
+    # it might be working now
+    return 'a different measure of success'
 
 if __name__ == '__main__':
     app.run(debug=True)
