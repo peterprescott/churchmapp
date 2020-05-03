@@ -35,7 +35,7 @@ def webhook():
 
 @app.route('/test')
 def test_python_anywhere():
-    # try again
+    # and again
     return 'success'
 
 if __name__ == '__main__':
