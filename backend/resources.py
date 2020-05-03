@@ -78,7 +78,7 @@ class TodoListResource(Resource):
 
 class Ping(Resource):
     def get(self):
-        return 'pong'
+        return 'pong!'
 
 
 class GitRefresh(Resource):
