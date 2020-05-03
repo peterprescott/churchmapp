@@ -33,6 +33,9 @@ def webhook():
     else:
         return 'Wrong event type', 400
 
+@app.route('/test')
+def test_python_anywhere():
+    return 'success'
 
 if __name__ == '__main__':
     app.run(debug=True)
