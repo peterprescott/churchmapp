@@ -27,7 +27,7 @@ api.add_resource(TodoResource, '/todos/<string:id>', endpoint='todo')
 @app.route('/git', methods=['POST'])
 def webhook():
     if request.method == 'POST':
-        repo = git.Repo(os.path.join('..'))
+        repo = git.Repo(os.path.join('~','flask-vue-app'))
         origin = repo.remotes.origin
         origin.pull()
         return 'Updated PythonAnywhere successfully', 200
