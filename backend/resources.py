@@ -7,6 +7,9 @@ from flask_restful import abort
 from flask_restful import Resource
 from flask_restful import fields
 from flask_restful import marshal_with
+import git
+import os.path
+
 
 todo_fields = {
     'id': fields.Integer,
@@ -71,3 +74,16 @@ class TodoListResource(Resource):
         session.add(todo)
         session.commit()
         return todo, 201
+
+
+class Ping(Resource):
+    def get(self):
+        return 'pong'
+
+
+class GitRefresh(Resource):
+    def post(self):
+        repo = git.Repo(os.path.join('~','flask-vue-app'))
+        origin = repo.remotes.origin
+        origin.pull()
+        return 'Updated PythonAnywhere successfully', 200
