@@ -16,7 +16,7 @@ api.add_resource(ConverterResource, '/convert/<string:postcode>', endpoint='coor
 api.add_resource(TodoListResource, '/todos', endpoint='todos')
 api.add_resource(TodoResource, '/todos/<string:id>', endpoint='todo')
 api.add_resource(GitRefresh, '/git')
-api.add_resource(Home, '/home')
+api.add_resource(Home, '/')
 
 
 if __name__ == '__main__':
