@@ -1,7 +1,6 @@
 
 from models import Todo, Converter
 from db import session
-
 from flask_restful import reqparse
 from flask_restful import abort
 from flask_restful import Resource
@@ -34,6 +33,7 @@ class ConverterResource(Resource):
         if not coords:
             abort(404, message=f"{postcode} does not appear to be a valid postcode.")
         return coords
+
 
 class TodoResource(Resource):
     @marshal_with(todo_fields)
@@ -74,15 +74,6 @@ class TodoListResource(Resource):
         session.add(todo)
         session.commit()
         return todo, 201
-
-
-class Home(Resource):
-    def get(self):
-
-        explanation = """This is the backend API for **churchmAPP**. 
-        You can find the frontend <a href="https://churchmapp.netlify.app">here</a>."""
-
-        return explanation
 
 
 class GitRefresh(Resource):

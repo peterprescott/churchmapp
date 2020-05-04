@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 
-from flask import Flask, request
+from flask import Flask, request, render_template
+from flaskext.markdown import Markdown
+from md_text import hello
 from flask_restful import Api, Resource
 from flask_cors import CORS
 
-from resources import TodoListResource, TodoResource, ConverterResource, GitRefresh, Home
+from resources import TodoListResource, TodoResource, ConverterResource, GitRefresh
 
 
 app = Flask(__name__)
-# CORS(app)
+Markdown(app)
 api = Api(app)
 
 
@@ -16,8 +18,10 @@ api.add_resource(ConverterResource, '/convert/<string:postcode>', endpoint='coor
 api.add_resource(TodoListResource, '/todos', endpoint='todos')
 api.add_resource(TodoResource, '/todos/<string:id>', endpoint='todo')
 api.add_resource(GitRefresh, '/git')
-api.add_resource(Home, '/')
 
+@app.route('/')
+def index():
+    return render_template('frame.html', text=hello.md)
 
 if __name__ == '__main__':
     app.run(debug=True)
