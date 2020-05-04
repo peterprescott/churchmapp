@@ -76,9 +76,13 @@ class TodoListResource(Resource):
         return todo, 201
 
 
-class Ping(Resource):
+class Home(Resource):
     def get(self):
-        return 'pong!'
+
+        explanation = """This is the backend API for **churchmAPP**. 
+        You can find the frontend <a href="https://churchmapp.netlify.app">here</a>."""
+
+        return explanation
 
 
 class GitRefresh(Resource):
