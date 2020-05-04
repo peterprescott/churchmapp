@@ -1,8 +1,8 @@
 <template>
   <div id="app">
     <h1>churchmAPP</h1>
-    <LeafletMap />
     <Postcode />
+		<LeafletMap />
   </div>
 </template>
 

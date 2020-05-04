@@ -1,6 +1,6 @@
 <template>
 
-	<div id="mapframe">
+	<div id="mapframe" class="container-md">
 		<div>
       <p>First marker is placed at {{ withPopup.lat }}, {{ withPopup.lng }}</p>
       <p>Center is at {{ currentCenter }} and the zoom is: {{ currentZoom }}</p>

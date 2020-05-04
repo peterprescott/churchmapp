@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="container">
 		<p>{{ pcode }}</p>
 		<p>{{ response }} </p>
   </div>
