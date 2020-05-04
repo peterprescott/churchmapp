@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     getMessage() {
-			const path = 'http://churchmapp.pythonanywhere.com/convert/';
+			const path = 'https://churchmapp.pythonanywhere.com/convert/';
       axios.get(path+this.pcode)
         .then((res) => {
           this.response= [res.data['latitude'], res.data['longitude']];
