@@ -78,7 +78,7 @@ class TodoListResource(Resource):
 
 class GitRefresh(Resource):
     def post(self):
-        repo = git.Repo(os.path.join('~','flask-vue-app'))
+        repo = git.Repo(os.path.join('~','churchmapp'))
         origin = repo.remotes.origin
         origin.pull()
         return 'Updated PythonAnywhere successfully', 200
