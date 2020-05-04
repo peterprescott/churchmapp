@@ -1,23 +1,20 @@
 <template>
   <div id="app">
-    <h1>App</h1>
+    <h1>churchmAPP</h1>
     <LeafletMap />
-    <Ping />
-    <DemoComponent />
+    <Postcode />
   </div>
 </template>
 
 <script>
 import LeafletMap from './components/LeafletMap.vue'
-import Ping from './components/Ping.vue'
-import DemoComponent from './components/DemoComponent.vue'
+import Postcode from './components/Postcode.vue'
 
 export default {
   name: 'App',
   components: {
     LeafletMap,
-    Ping,
-    DemoComponent
+    Postcode,
   }
 }
 </script>
