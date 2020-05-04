@@ -1,17 +1,21 @@
 <template>
 
 	<div id="mapframe" class="container-md">
-		<div>
+		<div class="container">
       <p>First marker is placed at {{ withPopup.lat }}, {{ withPopup.lng }}</p>
       <p>Center is at {{ currentCenter }} and the zoom is: {{ currentZoom }}</p>
-      <button @click="showLongText">
+			<button type="button" 
+				class="btn btn-primary ml-3 mt-3 mr-3 mb-3" 
+				@click="showLongText">
         Toggle long popup
       </button>
-      <button @click="showMap = !showMap">
+			<button type="button" 
+        class="btn btn-primary ml-3 mt-3 mr-3 mb-3" 
+				@click="showMap = !showMap">
         Toggle map
       </button>
     </div>
-    <l-map
+			<l-map
       v-if="showMap"
       :zoom="zoom"
       :center="center"
@@ -48,7 +52,7 @@
           </div>
         </l-tooltip>
       </l-marker>
-    </l-map>
+		</l-map>
   </div>
 </template>
 

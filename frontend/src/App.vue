@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <h1>churchmAPP</h1>
+		<div class="jumbotron">
+			<h1>churchmAPP</h1>
+		</div>
     <Postcode />
 		<LeafletMap />
   </div>
@@ -21,11 +23,7 @@ export default {
 
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
   margin-top: 60px;
+	text-align: center;
 }
 </style>
