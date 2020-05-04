@@ -2,6 +2,7 @@
   <div id="app">
 		<div class="jumbotron">
 			<h1>churchmAPP</h1>
+			<p class="lead">Where is your Local Church?</p>
 		</div>
     <Postcode />
 		<LeafletMap />
