@@ -25,4 +25,4 @@ def index():
     return render_template('frame.html', text=hello.md)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
