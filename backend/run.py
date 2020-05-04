@@ -11,6 +11,7 @@ from resources import TodoListResource, TodoResource, ConverterResource, GitRefr
 
 app = Flask(__name__)
 Markdown(app)
+CORS(app)
 api = Api(app)
 
 
