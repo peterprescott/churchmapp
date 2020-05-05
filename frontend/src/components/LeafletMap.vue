@@ -1,11 +1,13 @@
 <template>
 
 	<div id="mapframe" class="container-md">
-			<div class="form-row mb-2 mx-sm-3 text-center">
+		<div class="col-auto">
+			<div class="col">
 			<input v-model='postcode' 
-				class ="form-control mb-2 mr-2 "
+				class ="mb-2 mr-2 form-control"
 				placeholder='Enter Postcode'
 			  @keyup.enter='markPostcode'>
+				</div><div class="col">
      <button
         name="button"
 				type="button"
@@ -14,7 +16,8 @@
       >
         Mark Postcode
     </button>
-		    </div>
+	</div>
+	</div>
 
 			<l-map
       v-if="showMap"
