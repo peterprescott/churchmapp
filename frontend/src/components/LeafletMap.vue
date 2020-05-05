@@ -6,16 +6,14 @@
 				placeholder='Enter Postcode'
 			  @keyup.enter='markPostcode'>
 		<p>{{ coords }}</p>
-		<button type="button" 
-				class="btn btn-primary ml-3 mt-3 mr-3 mb-3" 
-				@click="showLongText">
-        Toggle long popup
-      </button>
-			<button type="button" 
-        class="btn btn-primary ml-3 mt-3 mr-3 mb-3" 
-				@click="showMap = !showMap">
-        Toggle map
-      </button>
+     <button
+        name="button"
+				type="button"
+				class="btn btn-primary mb-5"
+        @click="addMarker"
+      >
+        Add a marker
+    </button>
     </div>
 			<l-map
       v-if="showMap"
@@ -30,24 +28,17 @@
         :url="url"
         :attribution="attribution"
       />
-      <l-marker :lat-lng="withPopup">
-        <l-popup>
-          <div @click="innerClick">
-            I am a popup
-                      </div>
-        </l-popup>
-      </l-marker>
-      <l-marker :lat-lng="withTooltip">
-        <l-tooltip :options="{ permanent: true, interactive: true }">
-          <div @click="innerClick">
-            I am a tooltip
-            <p v-show="showParagraph">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-              sed pretium nisl, ut sagittis sapien. Sed vel sollicitudin nisi.
-              Donec finibus semper metus id malesuada.
-            </p>
-          </div>
-        </l-tooltip>
+			<l-marker
+        v-for="marker in markers"
+        :key="marker.id"
+        :visible="marker.visible"
+        :draggable="marker.draggable"
+        :lat-lng.sync="marker.position"
+        :icon="marker.icon"
+        @click="alert(marker)"
+      >
+        <l-popup :content="marker.tooltip" />
+        <l-tooltip :content="marker.tooltip" />
       </l-marker>
 		</l-map>
   </div>
@@ -76,6 +67,7 @@ export default {
 			api: this.apiURL,
 			postcode: 'L1 4BS',
 			coords: '',
+			markers: [],
       zoom: 15,
       center: latLng(53.376282, -2.920921),
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -97,12 +89,24 @@ export default {
 			const path = this.api + '/convert/' + this.postcode;
       axios.get(path)
         .then((response) => {
-          this.coords = latLng(response.data.latitude, response.data.longitude);
+					this.coords = {
+						lat: response.data.latitude, 
+						lng: response.data.longitude
+					},
+					this.addMarker(this.coords);
         })
         .catch((error) => {
           // eslint-disable-next-line
           console.error(error);
         });
+    },
+		addMarker(position) {
+      const newMarker = {
+				position: position,
+        draggable: true,
+        visible: true,
+      };
+      this.markers.push(newMarker);
     },
 
 		markPostcode(){
