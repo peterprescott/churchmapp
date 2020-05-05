@@ -1,5 +1,5 @@
 
-from models import Todo, Converter, Church
+from models import Todo, Converter, Church, User
 from db import session
 from flask_restful import reqparse
 from flask_restful import abort
@@ -8,12 +8,20 @@ from flask_restful import fields
 from flask_restful import marshal_with
 import git
 import os.path
+from passlib.hash import pbkdf2_sha256
 
 
 todo_fields = {
     'id': fields.Integer,
     'task': fields.String,
     'uri': fields.Url('todo', absolute=True),
+}
+
+converter_fields = {
+    'id': fields.Integer,
+    'postcode': fields.String,
+    'latitude': fields.Float,
+    'longitude': fields.Float
 }
 
 church_fields = {
@@ -26,11 +34,11 @@ church_fields = {
     'uri': fields.Url('church', absolute=True),
 }
 
-converter_fields = {
+user_fields = {
     'id': fields.Integer,
-    'postcode': fields.String,
-    'latitude': fields.Float,
-    'longitude': fields.Float
+    'email': fields.String,
+    'password_hash': fields.String,
+    'uri': fields.Url('user', absolute=True),
 }
 
 parser = reqparse.RequestParser()
@@ -40,14 +48,87 @@ parser.add_argument('latitude', type=float)
 parser.add_argument('longitude', type=float)
 parser.add_argument('name', type=str)
 parser.add_argument('website', type=str)
+parser.add_argument('email', type=str)
+parser.add_argument('password_hash', type=str)
 
-class ConverterResource(Resource):
-    @marshal_with(converter_fields)
-    def get(self, postcode):
-        coords = session.query(Converter).filter(Converter.postcode == postcode).first()
-        if not coords:
-            abort(404, message=f"{postcode} does not appear to be a valid postcode.")
-        return coords
+class UserResource(Resource):
+    @marshal_with(user_fields)
+    # def get(self, id):
+    #     user = session.query(User).filter(User.id == id).first()
+    #     if not user:
+    #         abort(404, message=f"User {id} does not exist.")
+    #     return user
+    def delete(self, id):
+        user = session.query(User).filter(User.id == id).first()
+        if not user:
+            abort(404, message=f"User {id} does not exist.")
+        session.delete(user)
+        session.commit()
+        return {}, 204
+    # def put(self, id):
+    #     parsed_args = parser.parse_args()
+    #     user = User(email=parsed_args['email'],
+    #         password_hash= pbkdf2_sha256.hash(parsed_args['password']))
+    #     user.
+    #     session.add(user)
+    #     session.commit()
+        
+
+
+class UserListResource(Resource):
+    # def get(self):
+    #     users = session.query(User).all()
+    #     return users
+
+    @marshal_with(user_fields)
+    def post(self):
+        parsed_args = parser.parse_args()
+        user = User(email=parsed_args['email'],
+            password_hash= pbkdf2_sha256.hash(parsed_args['password']))
+        session.add(user)
+        session.commit()
+        return user, 201
+
+
+class TodoResource(Resource):
+    @marshal_with(todo_fields)
+    def get(self, id):
+        todo = session.query(Todo).filter(Todo.id == id).first()
+        if not todo:
+            abort(404, message="Todo {} doesn't exist".format(id))
+        return todo
+
+    def delete(self, id):
+        todo = session.query(Todo).filter(Todo.id == id).first()
+        if not todo:
+            abort(404, message="Todo {} doesn't exist".format(id))
+        session.delete(todo)
+        session.commit()
+        return {}, 204
+
+    @marshal_with(todo_fields)
+    def put(self, id):
+        parsed_args = parser.parse_args()
+        todo = session.query(Todo).filter(Todo.id == id).first()
+        todo.task = parsed_args['task']
+        session.add(todo)
+        session.commit()
+        return todo, 201
+
+
+class TodoListResource(Resource):
+    @marshal_with(todo_fields)
+    def get(self):
+        todos = session.query(Todo).all()
+        return todos
+
+    @marshal_with(todo_fields)
+    def post(self):
+        parsed_args = parser.parse_args()
+        todo = Todo(task=parsed_args['task'])
+        session.add(todo)
+        session.commit()
+        return todo, 201
 
 
 class ChurchResource(Resource):
@@ -96,45 +177,13 @@ class ChurchListResource(Resource):
         return church, 201
 
 
-class TodoResource(Resource):
-    @marshal_with(todo_fields)
-    def get(self, id):
-        todo = session.query(Todo).filter(Todo.id == id).first()
-        if not todo:
-            abort(404, message="Todo {} doesn't exist".format(id))
-        return todo
-
-    def delete(self, id):
-        todo = session.query(Todo).filter(Todo.id == id).first()
-        if not todo:
-            abort(404, message="Todo {} doesn't exist".format(id))
-        session.delete(todo)
-        session.commit()
-        return {}, 204
-
-    @marshal_with(todo_fields)
-    def put(self, id):
-        parsed_args = parser.parse_args()
-        todo = session.query(Todo).filter(Todo.id == id).first()
-        todo.task = parsed_args['task']
-        session.add(todo)
-        session.commit()
-        return todo, 201
-
-
-class TodoListResource(Resource):
-    @marshal_with(todo_fields)
-    def get(self):
-        todos = session.query(Todo).all()
-        return todos
-
-    @marshal_with(todo_fields)
-    def post(self):
-        parsed_args = parser.parse_args()
-        todo = Todo(task=parsed_args['task'])
-        session.add(todo)
-        session.commit()
-        return todo, 201
+class ConverterResource(Resource):
+    @marshal_with(converter_fields)
+    def get(self, postcode):
+        coords = session.query(Converter).filter(Converter.postcode == postcode).first()
+        if not coords:
+            abort(404, message=f"{postcode} does not appear to be a valid postcode.")
+        return coords
 
 
 class GitRefresh(Resource):

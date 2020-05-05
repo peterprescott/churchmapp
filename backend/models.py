@@ -40,6 +40,13 @@ class Member(Base):
     sex = Column(String(1))
     church = Column(String(255))
 
+class User(Base):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True)
+    email = Column(String(255))
+    password_hash = Column(String(255))
+
 if __name__ == "__main__":
     from sqlalchemy import create_engine
     from settings import DB_URI
