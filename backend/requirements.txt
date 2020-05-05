@@ -2,5 +2,8 @@ flask
 flask-restful
 sqlalchemy
 flask-cors
+flask-jwt
+passlib
+python-jwt
 gitpython
 Flask-Markdown
