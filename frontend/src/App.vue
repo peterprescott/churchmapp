@@ -4,6 +4,7 @@
 			<h1>churchmAPP</h1>
 			<p class="lead">Where is your Local Church?</p>
 		</div>
+		<Postcode />
 		<LeafletMap 
 			apiURL="https://churchmapp.pythonanywhere.com"
 		  />
@@ -12,11 +13,13 @@
 
 <script>
 import LeafletMap from './components/LeafletMap.vue'
+import Postcode from './components/Postcode.vue'
 
 export default {
   name: 'App',
   components: {
     LeafletMap,
+		Postcode,
   }
 }
 </script>
