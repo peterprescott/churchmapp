@@ -34,13 +34,6 @@ church_fields = {
     'uri': fields.Url('church', absolute=True),
 }
 
-user_fields = {
-    'id': fields.Integer,
-    'email': fields.String,
-    'password_hash': fields.String,
-    'uri': fields.Url('user', absolute=True),
-}
-
 parser = reqparse.RequestParser()
 parser.add_argument('task', type=str)
 parser.add_argument('postcode', type=str)
@@ -48,46 +41,6 @@ parser.add_argument('latitude', type=float)
 parser.add_argument('longitude', type=float)
 parser.add_argument('name', type=str)
 parser.add_argument('website', type=str)
-parser.add_argument('email', type=str)
-parser.add_argument('password_hash', type=str)
-
-class UserResource(Resource):
-    @marshal_with(user_fields)
-    # def get(self, id):
-    #     user = session.query(User).filter(User.id == id).first()
-    #     if not user:
-    #         abort(404, message=f"User {id} does not exist.")
-    #     return user
-    def delete(self, id):
-        user = session.query(User).filter(User.id == id).first()
-        if not user:
-            abort(404, message=f"User {id} does not exist.")
-        session.delete(user)
-        session.commit()
-        return {}, 204
-    # def put(self, id):
-    #     parsed_args = parser.parse_args()
-    #     user = User(email=parsed_args['email'],
-    #         password_hash= pbkdf2_sha256.hash(parsed_args['password']))
-    #     user.
-    #     session.add(user)
-    #     session.commit()
-        
-
-
-class UserListResource(Resource):
-    # def get(self):
-    #     users = session.query(User).all()
-    #     return users
-
-    @marshal_with(user_fields)
-    def post(self):
-        parsed_args = parser.parse_args()
-        user = User(email=parsed_args['email'],
-            password_hash= pbkdf2_sha256.hash(parsed_args['password']))
-        session.add(user)
-        session.commit()
-        return user, 201
 
 
 class TodoResource(Resource):
