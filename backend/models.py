@@ -22,6 +22,15 @@ class Converter(Base):
     latitude = Column(Float)
     longitude = Column(Float)
 
+class Church(Base):
+    __tablename__ = 'churches'
+
+    id = Column(Integer, primary_key=True)
+    postcode = Column(String(255))
+    coords = Column(String(255))
+    name = Column(String(255))
+    website = Column(String(255))
+
 class Member(Base):
     __tablename__ = 'members'
 
