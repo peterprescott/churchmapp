@@ -1,20 +1,21 @@
 <template>
 
 	<div id="mapframe" class="container-md">
-		<div class="container">
+			<div class="form-row mb-2 mx-sm-3 text-center">
 			<input v-model='postcode' 
+				class ="form-control mb-2 mr-2 "
 				placeholder='Enter Postcode'
 			  @keyup.enter='markPostcode'>
-		<p>{{ coords }}</p>
      <button
         name="button"
 				type="button"
-				class="btn btn-primary mb-5"
-        @click="addMarker"
+				class="btn btn-primary mb-2"
+        @click="markPostcode"
       >
-        Add a marker
+        Mark Postcode
     </button>
-    </div>
+		    </div>
+
 			<l-map
       v-if="showMap"
       :zoom="zoom"
@@ -107,6 +108,7 @@ export default {
         visible: true,
       };
       this.markers.push(newMarker);
+			this.center=this.coords;
     },
 
 		markPostcode(){
