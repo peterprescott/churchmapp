@@ -4,7 +4,6 @@ from flask import Flask, request, render_template, jsonify
 from flaskext.markdown import Markdown
 from flask_restful import Api, Resource
 from flask_cors import CORS
-from flask_jwt import JWT, jwt_required, current_identity
 from werkzeug.security import safe_str_cmp
 from passlib.hash import pbkdf2_sha256
 from datetime import datetime, timedelta
