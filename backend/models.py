@@ -27,7 +27,8 @@ class Church(Base):
 
     id = Column(Integer, primary_key=True)
     postcode = Column(String(255))
-    coords = Column(String(255))
+    latitude = Column(Float)
+    longitude = Column(Float)
     name = Column(String(255))
     website = Column(String(255))
 

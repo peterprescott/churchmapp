@@ -1,5 +1,5 @@
 
-from models import Todo, Converter
+from models import Todo, Converter, Church
 from db import session
 from flask_restful import reqparse
 from flask_restful import abort
@@ -16,6 +16,16 @@ todo_fields = {
     'uri': fields.Url('todo', absolute=True),
 }
 
+church_fields = {
+    'id': fields.Integer,
+    'postcode': fields.String,
+    'latitude': fields.Float,
+    'longitude': fields.Float,
+    'name': fields.String,
+    'website': fields.String,
+    'uri': fields.Url('church', absolute=True),
+}
+
 converter_fields = {
     'id': fields.Integer,
     'postcode': fields.String,
@@ -25,6 +35,11 @@ converter_fields = {
 
 parser = reqparse.RequestParser()
 parser.add_argument('task', type=str)
+parser.add_argument('postcode', type=str)
+parser.add_argument('latitude', type=float)
+parser.add_argument('longitude', type=float)
+parser.add_argument('name', type=str)
+parser.add_argument('website', type=str)
 
 class ConverterResource(Resource):
     @marshal_with(converter_fields)
@@ -33,6 +48,52 @@ class ConverterResource(Resource):
         if not coords:
             abort(404, message=f"{postcode} does not appear to be a valid postcode.")
         return coords
+
+
+class ChurchResource(Resource):
+    @marshal_with(church_fields)
+    def get(self, id):
+        church = session.query(Church).filter(Church.id==id).first()
+        if not church:
+            abort(404, message="Church {} is not in our database".format(id))
+        return church
+
+    def delete(self, id):
+        church = session.query(Church).filter(Church.id == id).first()
+        if not church:
+            abort(404, message="Church {} doesn't exist".format(id))
+        session.delete(church)
+        session.commit()
+        return {}, 204
+
+    @marshal_with(church_fields)
+    def put(self, id):
+        parsed_args = parser.parse_args()
+        church = session.query(Church).filter(Church.id == id).first()
+        church.postcode=parsed_args['postcode'],
+        church.name=parsed_args['name'],
+        church.website=parsed_args['website'],
+        church.latitude=parsed_args['latitude'],
+        church.longitude=parsed_args['longitude'],
+        session.add(church)
+        session.commit()
+        return todo, 201
+
+
+class ChurchListResource(Resource):
+    @marshal_with(church_fields)
+    def get(self):
+        churches = session.query(Church).all()
+        return churches
+
+    @marshal_with(church_fields)
+    def post(self):
+        parsed_args = parser.parse_args()
+
+        church = Church(postcode=parsed_args['postcode'],latitude=parsed_args['latitude'], longitude=parsed_args['longitude'], name=parsed_args['name'], website=parsed_args['website'])
+        session.add(church)
+        session.commit()
+        return church, 201
 
 
 class TodoResource(Resource):
