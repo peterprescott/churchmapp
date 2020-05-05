@@ -20,7 +20,7 @@ api.add_resource(TodoListResource, '/todos', endpoint='todos')
 api.add_resource(TodoResource, '/todos/<string:id>', endpoint='todo')
 api.add_resource(GitRefresh, '/git')
 api.add_resource(ChurchListResource, '/churches', endpoint='churches')
-api.add_resource(ChurchResource, '/church/<string:id>', endpoint='church')
+api.add_resource(ChurchResource, '/churches/<string:id>', endpoint='church')
 
 @app.route('/')
 def index():

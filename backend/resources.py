@@ -77,7 +77,7 @@ class ChurchResource(Resource):
         church.longitude=parsed_args['longitude'],
         session.add(church)
         session.commit()
-        return todo, 201
+        return church, 201
 
 
 class ChurchListResource(Resource):
