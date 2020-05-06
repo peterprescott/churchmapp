@@ -29,41 +29,48 @@ api.add_resource(GitRefresh, '/git')
 api.add_resource(ChurchListResource, '/churches', endpoint='churches')
 api.add_resource(ChurchResource, '/churches/<string:id>', endpoint='church')
 
-### user registration
-@app.route('/register', methods=['POST'])
-def register():
-    try:
-        email = request.json['email']
-        password = request.json['password']
-        hash = pbkdf2_sha256.hash(password)
-        new_user = User(email=email, password_hash=hash)
-        session.add(new_user)
-        session.commit()
-    except Exception as e:
-        return jsonify({'error':str(e)[:62]}), 500
-
-    return jsonify({'message':'User registered successfully'}), 201
-
-### user authentication
+### user registration/authentication
 @app.route('/auth', methods=['POST'])
 def authenticate():
     try:
         email = request.json['email']
         password = request.json['password']
-        user = session.query(User).filter(User.email==email).first()
-        if user:
-            if pbkdf2_sha256.verify(password,user.password_hash):
-                payload = { 'email': email }
-                token = jwt.generate_jwt(
-                    payload, JWT_security_key, 
-                    'PS256', timedelta(minutes=15))
-                return jsonify({
-                    'message': 'Authentication successful', 
-                    'JWT': token
-                            }), 202
+
+        user = session.query(User)\
+                    .filter(User.email==email)\
+                    .first()
+        if user: # if user already exists...
+            # ... authenticate password
+            if not pbkdf2_sha256\
+                    .verify(
+                        password,
+                        user.password_hash
+                        ):
+                return jsonify(
+                    {'message':'Wrong password for that email'}
+                    ), 401
+            else:
+                message = 'Authentication successful'
+
+        else: # else create new password hash and user
+            hash = pbkdf2_sha256.hash(password)
+            user = User(email=email, password_hash=hash)
+            session.add(user)
+            session.commit()
+            message = 'Registration successful'
+
+        # everyone still here gets a token
+        payload = { 'email': email }
+        token = jwt.generate_jwt(
+            payload, JWT_security_key, 
+            'PS256', timedelta(minutes=15))
+        return jsonify({
+            'message': message, 
+            'JWT': token
+                    }), 202
 
     except Exception as e:
-        return jsonify({'error':str(e)}), 500
+        return jsonify({'error':str(e)[:100]}), 500
 
 ### JWT validation
 @app.route('/validate', methods=['POST'])
@@ -72,9 +79,16 @@ def validate():
         token = request.headers.get('JWT')
         header, claims = jwt.verify_jwt(token, JWT_security_key, ['PS256'])
         email = claims['email']
-        return jsonify({'email': email})
+        payload = {'email': email}
+        new_token = jwt.generate_jwt(
+            payload, JWT_security_key, 
+            'PS256', timedelta(minutes=15))
+        message = 'Token validation successful'
+
+        return jsonify({'message': message,
+                        'JWT': new_token}), 202
     except Exception as e:
-        return jsonify({'error':str(e)}), 500
+        return jsonify({'message': 'Validation failed'}), 401
 
 ### Cover page
 @app.route('/')
