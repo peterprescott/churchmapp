@@ -30,7 +30,7 @@ class Church(Base):
     latitude = Column(Float)
     longitude = Column(Float)
     name = Column(String(255))
-    website = Column(String(255))
+    user = Column(String(255))
 
 class Member(Base):
     __tablename__ = 'members'

@@ -40,7 +40,7 @@ parser.add_argument('postcode', type=str)
 parser.add_argument('latitude', type=float)
 parser.add_argument('longitude', type=float)
 parser.add_argument('name', type=str)
-parser.add_argument('website', type=str)
+parser.add_argument('user', type=str)
 
 
 class TodoResource(Resource):
@@ -124,7 +124,7 @@ class ChurchListResource(Resource):
     def post(self):
         parsed_args = parser.parse_args()
 
-        church = Church(postcode=parsed_args['postcode'],latitude=parsed_args['latitude'], longitude=parsed_args['longitude'], name=parsed_args['name'], website=parsed_args['website'])
+        church = Church(postcode=parsed_args['postcode'],latitude=parsed_args['latitude'], longitude=parsed_args['longitude'], name=parsed_args['name'], user=parsed_args['user'])
         session.add(church)
         session.commit()
         return church, 201
