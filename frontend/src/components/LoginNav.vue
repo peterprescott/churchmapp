@@ -43,21 +43,22 @@ export default {
 
 	methods: {
 		auth() {
+			console.log('Authenticating...')
 			const API='https://churchmapp.pythonanywhere.com/auth';
 			axios.post(API,
 			 { email: this.email, password: this.password } 
-			).then((response) => this.authSuccess(request))
+			).then((response) => this.authSuccess(response))
 				.catch(() => this.authFail() )
 		},
 
-		authSuccess(req) {
-			if (!req['JWT']) { this.authFail(); return }
-			token = response.JWT;
+		authSuccess(response) {
+			if (!response.data.JWT) { this.authFail(); return }
+			this.token = response.data.JWT;
 			this.connected = true;
 
 		},
 		authFail() {
-			token:'';
+			this.token='';
 			this.connected = false;
 		}
 	}
