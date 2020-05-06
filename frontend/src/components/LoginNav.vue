@@ -55,11 +55,13 @@ export default {
 			if (!response.data.JWT) { this.authFail(); return }
 			this.token = response.data.JWT;
 			this.connected = true;
+			console.log('Connected!')
 
 		},
 		authFail() {
 			this.token='';
 			this.connected = false;
+			console.log('Failed.')
 		}
 	}
 }
