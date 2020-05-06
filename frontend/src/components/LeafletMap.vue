@@ -24,8 +24,8 @@
         :icon="marker.icon"
         @click="alert(marker)"
       >
-        <l-popup :content="marker.tooltip" />
-        <l-tooltip :content="marker.tooltip" />
+        <l-popup :content="marker.name" />
+        <l-tooltip :content="marker.name" />
 		</l-marker>
 			</l-map>
 
@@ -51,7 +51,7 @@
 	<div id="marker-table">
       <table>
         <tr>
-					<th>[ @ ]</th>
+					<!--					<th>[ @ ]</th> -->
           <th>Name</th>
           <th>Postcode</th>
           <th>[ X ]</th>
@@ -60,9 +60,9 @@
           v-for="(item, index) in markers"
           :key="index"
         >
-					<td><button @click="centerOn(
+					<!-- <td><button @click="centerUpdate(
 							item.latitude, 
-							item.longitude)">@</button></td>
+							item.longitude)">@</button></td> -->
           <td>
             <input
               v-model.text="item.name"
@@ -72,9 +72,6 @@
           <td>
 						{{ item.postcode }}
           </td>
-					<td><button 
-							@click="deleteMarker">X</button>
-					</td>
           <td style="text-align: center">
             <input
               type="button"
