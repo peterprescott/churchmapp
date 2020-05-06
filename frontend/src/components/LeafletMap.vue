@@ -5,6 +5,7 @@
       v-if="showMap"
       :zoom="zoom"
       :center="center"
+			:max-bounds="bounds"
       :options="mapOptions"
       style="height: 80%"
       @update:center="centerUpdate"
@@ -51,7 +52,7 @@
 </template>
 
 <script>
-import { latLng } from "leaflet";
+import { latLng, latLngBounds } from "leaflet";
 import { LMap, LTileLayer, LMarker, LPopup, LTooltip } from "vue2-leaflet";
 import axios from 'axios';
 
@@ -76,6 +77,10 @@ export default {
 			markers: [],
       zoom: 15,
       center: latLng(53.376282, -2.920921),
+			bounds: latLngBounds(
+        { lat: 49.0, lng: 2.75 },
+        { lat: 60.7, lng: -7.81 }
+      ),
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       attribution:
         '&copy; <a href="http://osm.org/copyright">OSM</a>',
