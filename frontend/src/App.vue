@@ -1,9 +1,6 @@
 <template>
   <div id="app">
-		<div class="jumbotron">
-			<h1>churchmAPP</h1>
-			<p class="lead">Where is your Local Church?</p>
-		</div>
+		<LoginNav />
 		<LeafletMap 
 			apiURL="https://churchmapp.pythonanywhere.com"
 		  />
@@ -11,11 +8,13 @@
 </template>
 
 <script>
+import LoginNav from './components/LoginNav.vue'
 import LeafletMap from './components/LeafletMap.vue'
 
 export default {
   name: 'App',
   components: {
+		LoginNav,
     LeafletMap,
   }
 }
@@ -23,7 +22,6 @@ export default {
 
 <style>
 #app {
-  margin-top: 60px;
 	text-align: center;
 }
 </style>

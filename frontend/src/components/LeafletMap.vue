@@ -32,14 +32,14 @@
 			<div class="col-auto">
 			<div class="col">
 			<input v-model='postcode' 
-				class ="mb-2 mr-2 form-control"
+				class ="mb-2 mr-2 mt-2 form-control"
 				placeholder='Enter Postcode'
 			  @keyup.enter='markPostcode'>
 				</div><div class="col">
      <button
         name="button"
 				type="button"
-				class="btn btn-primary mb-2"
+				class="btn btn-info mb-2"
         @click="markPostcode"
       >
         Mark Postcode

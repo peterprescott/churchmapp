@@ -1,9 +1,9 @@
 <template>
 <header class="mb-5" >
     <div class="inner container ">
-        <nav>
+        <nav >
 							<p class="title">churchmAPP</p>
-							<form class="form-signin" @submit.prevent="auth">
+							<form v-if="!connected" class="form-signin" @submit.prevent="auth">
             <input type="checkbox" id="nav" class="nav-login"/><label for="nav"></label>
 						<ul class="list-inline">
 							<li class="list-inline-item">
@@ -16,13 +16,15 @@
             </ul>
 					</form>
         </nav>
+				<p v-if="connected">Signed in as {{ email }}.</p>
+			</div>
     </div>
 	</header>
 
 </template>
 
 <script>
-/* import ; */
+import axios from 'axios'; 
 
 /* const x = y; */
 
@@ -32,16 +34,32 @@ export default {
 	data() {
 	  return {
 			email:'',
-			password:''
+			password:'',
+			connected: false,
+			token: '',
 	  };
 	
 	},
 
 	methods: {
 		auth() {
-			console.log(this.email),
-			console.log(this.password)
-	}
+			const API='https://churchmapp.pythonanywhere.com/auth';
+			axios.post(API,
+			 { email: this.email, password: this.password } 
+			).then((response) => this.authSuccess(request))
+				.catch(() => this.authFail() )
+		},
+
+		authSuccess(req) {
+			if (!req['JWT']) { this.authFail(); return }
+			token = response.JWT;
+			this.connected = true;
+
+		},
+		authFail() {
+			token:'';
+			this.connected = false;
+		}
 	}
 }
 </script>
