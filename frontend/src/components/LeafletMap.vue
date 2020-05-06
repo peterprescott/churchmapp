@@ -48,6 +48,44 @@
 	</div>
 	</div>
 
+	<div id="marker-table">
+      <table>
+        <tr>
+					<th>[ @ ]</th>
+          <th>Name</th>
+          <th>Postcode</th>
+          <th>[ X ]</th>
+        </tr>
+        <tr
+          v-for="(item, index) in markers"
+          :key="index"
+        >
+					<td><button @click="centerOn(
+							item.latitude, 
+							item.longitude)">@</button></td>
+          <td>
+            <input
+              v-model.text="item.name"
+              type="text"
+            >
+          </td>
+          <td>
+						{{ item.postcode }}
+          </td>
+					<td><button 
+							@click="deleteMarker">X</button>
+					</td>
+          <td style="text-align: center">
+            <input
+              type="button"
+              value="X"
+              @click="removeMarker(index)"
+            >
+          </td>
+        </tr>
+      </table>
+     	</div>
+
   </div>
 </template>
 
@@ -111,11 +149,19 @@ export default {
 		addMarker(position) {
       const newMarker = {
 				position: position,
-        draggable: true,
+				postcode: this.postcode,
+				latitude: this.latitude,
+				longitude: this.longitude,
+				name: this.name,
+				owner: this.email,
         visible: true,
       };
       this.markers.push(newMarker);
 			this.center=this.coords;
+    },
+
+		removeMarker: function(index) {
+      this.markers.splice(index, 1);
     },
 
 		markPostcode(){
