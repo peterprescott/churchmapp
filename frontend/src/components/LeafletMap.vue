@@ -49,13 +49,16 @@
 	</div>
 
 	<div id="marker-table">
-      <table>
+      <table class="table table-hover">
+				<thead>
         <tr>
 					<!--					<th>[ @ ]</th> -->
-          <th>Name</th>
-          <th>Postcode</th>
-          <th>[ X ]</th>
+          <th scope="col">Name</th>
+          <th scope="col">Postcode</th>
+          <th scope="col">[ X ]</th>
         </tr>
+			</thead>
+			<tbody>
         <tr
           v-for="(item, index) in markers"
           :key="index"
@@ -80,6 +83,7 @@
             >
           </td>
         </tr>
+			</tbody>
       </table>
      	</div>
 
