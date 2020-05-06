@@ -3,16 +3,18 @@
     <div class="inner container ">
         <nav>
 							<p class="title">churchmAPP</p>
+							<form class="form-signin" @submit.prevent="auth">
             <input type="checkbox" id="nav" class="nav-login"/><label for="nav"></label>
 						<ul class="list-inline">
 							<li class="list-inline-item">
-								<input id="email" type="email" placeholder="name@email.com" class="nav-login">
+								<input v-model="email" id="inputEmail" type="email" placeholder="name@email.com" class="nav-login">
 							</li>
                 <li class="list-inline-item">
-								<input id="password" type="password" placeholder="password" class="nav-login">
+								<input v-model="password" id="inputPassword" type="password" placeholder="password" class="nav-login">
                 </li class="list-inline-item">
-								<li class="list-inline-item"><a href="#"><button class="btn btn-primary nav-login">LOGIN/REGISTER</button></a></li>
+								<li class="list-inline-item"><a href="#"><button class="btn btn-dark">LOGIN/REGISTER</button></a></li>
             </ul>
+					</form>
         </nav>
     </div>
 	</header>
@@ -29,12 +31,17 @@ export default {
 
 	data() {
 	  return {
-		  show: true,
+			email:'',
+			password:''
 	  };
 	
 	},
 
 	methods: {
+		auth() {
+			console.log(this.email),
+			console.log(this.password)
+	}
 	}
 }
 </script>

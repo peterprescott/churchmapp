@@ -1,24 +1,6 @@
 <template>
 
 	<div id="mapframe" class="container-md">
-		<div class="col-auto">
-			<div class="col">
-			<input v-model='postcode' 
-				class ="mb-2 mr-2 form-control"
-				placeholder='Enter Postcode'
-			  @keyup.enter='markPostcode'>
-				</div><div class="col">
-     <button
-        name="button"
-				type="button"
-				class="btn btn-primary mb-2"
-        @click="markPostcode"
-      >
-        Mark Postcode
-    </button>
-	</div>
-	</div>
-
 			<l-map
       v-if="showMap"
       :zoom="zoom"
@@ -43,8 +25,28 @@
       >
         <l-popup :content="marker.tooltip" />
         <l-tooltip :content="marker.tooltip" />
-      </l-marker>
-		</l-map>
+		</l-marker>
+			</l-map>
+
+	
+			<div class="col-auto">
+			<div class="col">
+			<input v-model='postcode' 
+				class ="mb-2 mr-2 form-control"
+				placeholder='Enter Postcode'
+			  @keyup.enter='markPostcode'>
+				</div><div class="col">
+     <button
+        name="button"
+				type="button"
+				class="btn btn-primary mb-2"
+        @click="markPostcode"
+      >
+        Mark Postcode
+    </button>
+	</div>
+	</div>
+
   </div>
 </template>
 
@@ -69,7 +71,7 @@ export default {
   data() {
     return {
 			api: this.apiURL,
-			postcode: 'L1 4BS',
+			postcode: 'L18 8DB',
 			coords: '',
 			markers: [],
       zoom: 15,
@@ -77,10 +79,7 @@ export default {
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       attribution:
         '&copy; <a href="http://osm.org/copyright">OSM</a>',
-      withPopup: latLng(47.41322, -1.219482),
-      withTooltip: latLng(47.41422, -1.250482),
       currentZoom: 11.5,
-      currentCenter: latLng(47.41322, -1.219482),
       showParagraph: false,
       mapOptions: {
         zoomSnap: 0.5
@@ -124,12 +123,8 @@ export default {
     centerUpdate(center) {
       this.currentCenter = center;
     },
-    showLongText() {
-      this.showParagraph = !this.showParagraph;
-    },
-    innerClick() {
-      alert("Click!");
-    } }
+    
+    }
 };
 </script>
 
