@@ -1,6 +1,6 @@
 # Notebooks
 
-These notebooks are synchronized by `jupytext` with their respective `.pyn` [scripts](../notebooks/) and `.Rmd` [markdown files](../rmd/).
+These notebooks are synchronized by `jupytext` with their respective `.py` [scripts](../scripts/) and `.Rmd` [markdown files](../rmd/).
 
 ## Preprocessing
 
