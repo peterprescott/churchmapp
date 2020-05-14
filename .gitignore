@@ -1,3 +1,4 @@
 backend/main.db
 data/sensitive
+*.db
 .ipynb*
