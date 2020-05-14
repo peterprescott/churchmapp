@@ -24,7 +24,7 @@ To transform the church members' postcode data into useful insight.
 
 ## Outputs
 
-You can read [my report](./pdf/report.pdf).
+You can see [my presentation](./pdf/presentation.pdf) or read [my report](./pdf/report.pdf).
 
 You can interact with [my notebooks](./notebooks/).
 
