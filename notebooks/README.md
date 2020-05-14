@@ -14,7 +14,7 @@ These notebooks are synchronized by `jupytext` with their respective `.py` [scri
 
 [Catchment Area Analysis](./catchment_distance.ipynb)
 
-[Print a list of local streets for a given (church?) postcode.](./local_streets.ipynb)
+[Print a list of local streets for a given postcode.](./local_streets.ipynb)
 
 ## Web App Testing
 
