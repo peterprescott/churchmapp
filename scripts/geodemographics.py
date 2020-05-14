@@ -1,0 +1,153 @@
+# ---
+# jupyter:
+#   jupytext:
+#     formats: notebooks//ipynb,rmd//Rmd,scripts//py
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
+
+# # Neighbourhood Geodemographics
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import geopandas as gpd
+
+oac = pd.read_csv('../data/csv/2011oac.csv.gz')
+conversion_chart = pd.read_csv('../data/csv/pcd2oa.csv.gz')
+portraits = pd.read_csv('../data/csv/penportraits.csv')
+
+
+# ## Neighbourhood Classifications
+
+def geodem(postcode):
+    """Get geodemographic classification for given postcode."""
+    
+    # first get output area of postcode
+    try:
+        output_area = conversion_chart.loc[conversion_chart.PCD7==postcode].OA11CD.values[0]
+    except:
+        output_area = 'Not Found'
+    
+    # then get classification of output area
+    try:
+        classification = oac.loc[oac['Output Area Code']==output_area]['Subgroup Code'].values[0]
+    except:
+        classification = 'Not Found'
+    
+    # also get relevant supergroup/group/subgroup pen portraits
+    try:
+        supergroup = portraits.loc[portraits.Code==classification[0]]
+        group = portraits.loc[portraits.Code==classification[:2]]
+        subgroup = portraits.loc[portraits.Code==classification]
+
+        supergroup_description = supergroup.Description.values[0]
+        group_description = group.Description.values[0]
+        subgroup_description = subgroup.Description.values[0]
+        
+        supergroup = supergroup.Name.values[0]
+        group = group.Name.values[0]
+        subgroup = subgroup.Name.values[0]
+
+    except:
+        supergroup = group = subgroup = supergroup_description = group_description = subgroup_description = 'Not Found'
+    
+    
+    return {'classification':classification,
+            'supergroup':supergroup,
+            'group':group,
+            'subgroup':subgroup,
+            'supergroup-description': supergroup_description,
+            'group-description': group_description,
+            'subgroup-description': subgroup_description
+           }
+
+churches = ['mossleyhill','sthelens','gateway','stoneycroftsalvationarmy']
+
+data = {}
+for church in churches:
+    data[church] = pd.read_csv(f'../data/sensitive/postcodes/{church}.csv')
+    
+
+for church in churches:
+    data[church] = pd.merge(data[church],conversion_chart[['OA11CD','PCD7']],left_on='Postcode',right_on='PCD7')
+    data[church].drop(columns='PCD7',inplace=True)
+    gd = {}
+    for postcode in data[church]['Postcode']:
+        gd[postcode] = geodem(postcode)
+    data[church]['Supergroup'] = data[church]['Postcode'].apply(lambda postcode: gd[postcode]['supergroup'])
+    data[church]['Group'] = data[church]['Postcode'].apply(lambda postcode: gd[postcode]['group'])
+    data[church]['Subgroup'] = data[church]['Postcode'].apply(lambda postcode: gd[postcode]['subgroup'])
+
+# +
+fig, axs = plt.subplots(4,3,figsize=(30,40))
+fontsize = 28
+
+colors = ['red','yellow','green','blue']
+precision = ['Supergroup','Group','Subgroup']
+church_name = ['Mossley Hill', 'St Helens', 'Gateway', 'Stoneycroft Salvation Army']
+
+for i, church in enumerate(churches):
+    for j, p in enumerate(precision):
+        ax = axs[i][j]
+        data[church][p].value_counts()[:8].plot.bar(ax=ax, label=church, color=colors[i], edgecolor='black')
+        ax.set_title(f'{p} : {church_name[i]}',fontsize=fontsize)
+        ax.set_ylim(0,int(data[church][p].value_counts()[0]*1.1 + 1))
+        for label in ax.get_xticklabels():
+            label.set_rotation(30)
+            label.set_ha('right')
+            label.set_fontsize(fontsize)
+        for label in ax.get_yticklabels():
+            label.set_fontsize(fontsize)
+
+plt.legend()
+plt.tight_layout()
+plt.show()
+# -
+
+for church in churches:
+    data[church].to_csv(f'../data/sensitive/derived/{church}.csv',index=False)
+    
+
+# ## Visualizing Maps
+
+lcr = gpd.read_file('../data/LiverpoolCityRegion.geojson')
+lcr['Supergroup'] = lcr['Subgroup Code'].str[0]
+lcr['Classification'] = lcr['Supergroup'].apply(lambda supergroup: portraits.loc[portraits.Code==supergroup].Name.values[0])
+
+dfs = []
+for church in churches:
+    data[church]['Church'] = church
+    dfs.append(data[church])
+chu_df = pd.concat(dfs)
+lcr_churches = pd.merge(lcr,chu_df,on='OA11CD',how='outer')
+
+f, ax = plt.subplots(figsize=(25,15))
+lcr_churches.plot(column='Church',cmap='RdYlGn',edgecolor='grey',
+                        missing_kwds={'color': 'white',
+                                  'edgecolor':'grey'},
+                  legend=True,
+                  ax=ax
+                 )
+ax.set_axis_off()
+f.tight_layout()
+# f.suptitle('Church Members\' Local Neighbourhoods',
+#           fontsize=16, y = 0)
+plt.axis('equal')
+plt.show()
+
+f, ax = plt.subplots(figsize=(25,15))
+lcr.plot(column='Classification',edgecolor='white',figsize=(25,25),legend=True, cmap='tab10', ax=ax)
+ax.set_axis_off()
+f.tight_layout()
+# f.suptitle(' Geodemographic Classifications of Liverpool City Region Output Areas',
+#                      fontsize=16, y = 0)
+plt.axis('equal')
+plt.show()

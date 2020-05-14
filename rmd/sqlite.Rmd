@@ -1,0 +1,103 @@
+---
+jupyter:
+  jupytext:
+    formats: notebooks//ipynb,rmd//Rmd,scripts//py
+    text_representation:
+      extension: .Rmd
+      format_name: rmarkdown
+      format_version: '1.2'
+      jupytext_version: 1.4.2
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
+```{python}
+# ! cp ../backend/main.db sensitive/main.db
+```
+
+```{python}
+# ! cp sensitive/main.db ../backend/main.db
+```
+
+```{python}
+import pandas as pd
+import numpy as np
+from sqlalchemy import create_engine
+import os.path
+```
+
+```{python}
+db = create_engine('sqlite:///sensitive/main.db')
+```
+
+```{python}
+query = """
+SELECT * FROM churches
+"""
+```
+
+```{python}
+pd.read_sql(query, db)
+```
+
+```{python}
+
+```
+
+```{python}
+qry2 = """
+SELECT * FROM sqlite_master
+"""
+```
+
+```{python}
+pd.read_sql(qry2, db)
+```
+
+```{python}
+qr3 = """
+SELECT * FROM users
+"""
+```
+
+```{python}
+pd.read_sql(qr3, db)
+```
+
+```{python}
+from passlib.hash import pbkdf2_sha256
+```
+
+```{python}
+hash = pbkdf2_sha256.hash('simple')
+```
+
+```{python}
+pbkdf2_sha256.verify('simple',hash)
+```
+
+```{python}
+hash
+```
+
+```{python}
+qry4 = """
+PRAGMA table_info(churches)
+"""
+```
+
+```{python}
+pd.read_sql(qry4, db)
+```
+
+```{python}
+qry5 = """
+DROP TABLE users
+"""
+```
+
+```{python}
+pd.read_sql(qry5, db)
+```
