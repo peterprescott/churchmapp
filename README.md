@@ -26,7 +26,7 @@ To transform the church members' postcode data into useful insight.
 
 You can read [my report](./pdf/report.pdf).
 
-You can interact with [my notebooks](../notebooks/).
+You can interact with [my notebooks](../notebooks/README.md).
 
 You can visit the [churchmAPP website](https://churchmapp.netlify.com).
 

@@ -1,36 +1,9 @@
-Demo RESTful HTTP API using [Flask](https://github.com/pallets/flask), [Flask-Restful](https://github.com/flask-restful/flask-restful) and [SQLAlchemy](https://github.com/zzzeek/sqlalchemy)
-===================
+# Backend
 
-1. Install requisite packages:
-```shell
-$ pip install -r requirements.txt
-```
-2. Create tables:
-```shell
-$ ./models.py
-```
-3. Run service:
-```
-$ python app.py
-```
-4. Give it a try:
-```shell
->> import requests, json
->> requests.get('http://localhost:5000/todos').json()
-[]
->> requests.post('http://localhost:5000/todos',
-                 headers={'Content-Type': 'application/json'},
-                 data=json.dumps({'task': 'go outside!'})).json()
-{u'id': 1, u'task': u'go outside!', u'uri': u'http://localhost:5000/todos/1'}
->> requests.get('http://localhost:5000/todos/1').json()
-{u'id': 1, u'task': u'go outside!', u'uri': u'http://localhost:5000/todos/1'}
->> requests.put('http://localhost:5000/todos/1',
-                headers={'Content-Type': 'application/json'},
-                data=json.dumps({'task': 'go to the gym'})).json()
-{u'id': 1, u'task': u'go to the gym', u'uri': u'http://localhost:5000/todos/1'}
->> requests.delete('http://localhost:5000/todos/1')
->> requests.get('http://localhost:5000/todos').json()
-[]
-```
+This was built on the foundation of Max Mautner's excellent [Simple API](https://github.com/), an excellent demonstration of how to struction a Flask API, using Flask-Restful to manage the API resources, and SQLAlchemy to interface with the database.
 
-Don't forget that you must pass a "Content-Type: application/json" header along with your request!
+I have extended it to include password hashing and JSON web token validation -- as well as adapting it to my particular purposes in other ways.
+
+It remains free to use under the MIT License.
+
+The functionality of [the API](../notebooks/api.ipynb), the [password-hashing](../notebooks/hash.ipynb) and the [JWT authentication](../notebooks/auth.ipynb) is demonstrated by their accompanying [notebooks](../notebooks/README.md).
