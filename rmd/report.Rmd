@@ -1,10 +1,7 @@
 ---
 title: 'Geographic Data Science for the Local Church: Extracting Insight from Congregational Postcode Data'
-author:
-    name: Peter Prescott
-    affiliation: Geographic Data Science Lab (University of Liverpool)
 biblio-style: pi-harvard
-bibliography: churchmAPP.bib
+bibliography: refs.bib
 template: latex-ms.tex
 jupyter:
   jupytext:

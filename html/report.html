@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<title>Geographic Data Science for the Local Church: Extracting Insight from Congregational Postcode Data</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js">
+</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.css" />
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script>
+
+<link rel="stylesheet" href="pandoc.css" />
+<!--[if lt IE 9]>
+<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+<![endif]-->
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+
+
+<header id="title-block-header">
+<h1 class="title">Geographic Data Science for the Local Church: Extracting Insight from Congregational Postcode Data</h1>
+
+
+
+</header>
+
+
+
+<h1 id="introduction">Introduction</h1>
+<p>This is a report on a research project done as part of the Data Analytics and Society MSc/Phd that I am doing at the University of Liverpool’s Geographic Data Science Lab.</p>
+<p>The project was to extract insight from the postcode data contained in the electoral roll (ie. the register of voting members) of Mossley Hill Church, an Anglican parish church in South Liverpool. The significance of being listed on the electoral roll can vary considerably from church to church, but the church’s website declares that “Electoral rolls provide an indication of the real membership and strength of the church… For us it is an act of commitment…” <span class="citation" data-cites="MossleyHillChurch2020a">(Mossley Hill Church 2020)</span>.</p>
+<p>Church membership and attendance statistics are much discussed in the context of claims and counterclaims about British secularization, with some arguing that at least on the evidence of declining church attendance, ‘God is dead’ <span class="citation" data-cites="SBruce2002">(Bruce 2002)</span>, and others showing that there is evidence also of desecularisation in some places <span class="citation" data-cites="DGoodhewCooper2018">(Goodhew and Cooper 2018)</span>. Discussing whether and why ours is ‘A Secular Age’ <span class="citation" data-cites="CTaylor2007a">(Taylor 2007)</span> is a fascinating question, but it was not in this case a focus of my research.</p>
+<p>Rather, my task here was more a demonstrative exploration of how postcode data might be turned into useful insight. Specifically, I explored three different (though complementary) approaches one could take to the task. First, I considered the <em>neighbourhood geodemographics</em> of the represented postcodes; second, I analyzed the travel distance between postcodes and their respective church, in the context of considering <em>catchment areas</em>; third, I developed an extendable mobile web app to allow individual interaction with postcode data in the fashion of a <em>data dashboard</em>. While I believe this does offer useful wisdom for church leaders seeking to better reach their communities, it is equally relevant to any sphere of activity interested in engaging with people in specific places.</p>
+<p>That said, my focus here is specifically on the Church. And since the Church is, in spite of denominational differences, a single theological entity rather than a set of competing spiritual businesses, I was able to reach out to a number of other leaders of churches in the Liverpool City Region to ask if they might be interested in my research, and if so whether they would be able to supplement my data with the postcodes of their own congregations. I was encouraged to receive swift and positive responses from St Helens Christian Life Centre <span class="citation" data-cites="CLC2020">(CLC 2020)</span>, <span class="citation" data-cites="Gateway2020">(Gateway 2020)</span>, and the Stoneycroft Salvation Army <span class="citation" data-cites="SalvationArmy2020">(Salvation Army 2020)</span>. In my report here I will include results from all four churches.</p>
+<h1 id="neighbourhood-geodemographics">Neighbourhood Geodemographics</h1>
+<p>Geodemographics is often introduced by quoting the pithy definition of <span class="citation" data-cites="PSleight1997">Sleight (1997)</span> – it is called “the analysis of people by where they live”. The reverse is at least as true: geodemographics is the analysis of places by the people who live there. Specifically, a geodemographic classification is made by algorithmically clustering geoographic areas into similar groups on the basis of the demographic and socioeconomic statistics of their inhabitants, and then naming and describing each resulting group in terms of its shared characteristics. This can be done at whatever scale for which there is data – generally, it is most useful at the finest possible scale of spatial resolution. The increasing availability of open-source statistics and of analytical computational power means it is now possible to create a geodemographic classification comparitively easily, and to tailor it to the needs of whatever particular case it is intended for; indeed, some have created systems to allow for the automatic real-time creation of geodemographic classifications on the fly <span class="citation" data-cites="MAdnan2011">(Adnan 2011)</span>.</p>
+<p>My aim here was simply to demonstrate the possibilities of geodemographic analysis for the purpose of helping a local church consider the value of their congregation’s postcode data. For a simple proof-of-concept it was adequate to make use of an existing classification. Possibilities included commercial classifications such as Mosaic <span class="citation" data-cites="Experian2020">(Experian 2020)</span> and Acorn <span class="citation" data-cites="CACI2020">(CACI 2020)</span>; I chose the 2011 Open Area Classification <span class="citation" data-cites="CGaleEtAl2016a">(Gale et al. 2016)</span>. As its name suggests, it is a free and open-source classification based on data from the 2011 UK census, which classifies each census ‘output area’ into one of eight ‘supergroups’: ‘Constrained City-Dwellers’, ‘Cosmopolitans’, ‘Ethnicity Central’, ‘Hard-Pressed Living’, ‘Multicultural Metropolitans’, ‘Rural Residents’, ‘Suburbanites’ or ‘Urbanites’. Each of these titles has a descriptive ‘pen portrait’ explaining in a few sentences its characteristics, and is subdivided into groups and subgroups with further relevant explanation.</p>
+<p>This, for example, is the pen-portrait for ‘Semi-detached suburbia’: “People in this group are slightly more likely to be divorced or separated than those in the supergroup. Households are more likely to live in semi-detached and terraced properties, with a higher proportion of households renting their accommodation.”</p>
+<figure>
+<img src="../figures/geodemographic-map.png" alt="" /><figcaption>Geodemographic Classification of Liverpool City Region Census Output Areas</figcaption>
+</figure>
+<p>Census output areas do not correlate exactly with postcode units, but a best-fit conversion can be achieved by considering which census output area the the post-code centroid falls into. This conversion table is published under the Open Government License<span class="citation" data-cites="ONS2018">(ONS 2018)</span>, and means we can identify the neighbourhood type of each person in the congregation, or even visualize the whole of, say, the Liverpool City Region, with a choropleth map (as in Figure 1) showing the supergroup classification of each output area. (To do this, we need the Output Area boundary <em>shapefiles</em>, which are freely available online <span class="citation" data-cites="ONS2016">(ONS 2016)</span>.)</p>
+<p>When we classify the data (as in Figure 2) for Mossley Hill, we see that more than half of their congregation live in neighbourhoods that are classified within the ‘Suburbanites’ supergroup; of which almost all are in the ‘Semi-detached suburbia’ group; specifically, the ‘Multi-ethnic suburbia’ and ‘Semi-detached ageing’ subgroups. In contrast, the data from the other churches shows that their congregations are more diverse in terms of the neighbourhoods their members live in, with the top two supergroups being much closer in each case.</p>
+<figure>
+<img src="../figures/geodemographic-breakdown.png" alt="" /><figcaption>Numerical Breakdown of Most Common Congregational Postcode Neighbourhoods</figcaption>
+</figure>
+<p>There is then the question of how to respond to this analysis. In retail strategy, geodemographic classification is often used with the assumption that those in similar neighbourhoods to existing customers are likely to themselves become customers. But a church is not a retail business with customers, and there is heated debate around the issue of homogenous-unit churches: are they necessary for church growth <span class="citation" data-cites="DMcGavran1990">(McGavran 1990)</span>, or deficiently unethical <span class="citation" data-cites="LPope1957">(Pope 1957)</span> – or can they perhaps be defended on Christian ethical grounds after all <span class="citation" data-cites="CWagner1978">(Wagner 1978)</span>.</p>
+<h1 id="catchment-area-analysis">Catchment Area Analysis</h1>
+<p>A catchment area is “the area extent from which the main patrons of a [service] will typically be found” <span class="citation" data-cites="LDolegaEtAl2016">(Dolega et al. 2016)</span>. The concept is widely used in retail, in education <span class="citation" data-cites="JPearce2000">(Pearce 2000)</span>, and in health <span class="citation" data-cites="GFulopEtAl2011">(Fülöp et al. 2011)</span>. Although similarly geographical, the idea is quite different to the territorial notion of political constituencies or traditional ecclesiastical parishes where a geographical community is served exclusively by the parliamentary or priestly representative whose zone they inhabit. Rather, to think in terms of ‘catchment areas’ is to think in terms of an overlapping set of multiple services that both combine and compete in complex and dynamic relationship with the choices of the target community.</p>
+<figure>
+<img src="../figures/mossley-hill-travel.png" alt="" /><figcaption>Routes from Congregational Postcodes to Mossley Hill</figcaption>
+</figure>
+<p>Within the Anglican Church, the ‘Fresh Expressions’ initiative <span class="citation" data-cites="GCray2014">(Cray 2014)</span> has attempted to loosen the strict geographical restrictions on what new services may be pioneered in what places, allowing potential new congregations to be gathered from a widespread area. This has in turn been the target of stringent critique from others within the Church <span class="citation" data-cites="ADavisonMilbank2010">(Davison and Milbank 2010)</span>. Outside the Church of England, the trend goes in the opposite direction, with increasing numbers calling for intentional ‘incarnational mission’ <span class="citation" data-cites="JKilpin2014">(Kilpin 2014)</span> to particular deprived and/or unchurched neighbourhoods.</p>
+<p>For my analysis, I used the Python package OSMNx <span class="citation" data-cites="GBoeing2017">(Boeing 2017)</span>, which makes it simple to obtain a network graph of the surrounding streets within a given distance of any coordinate point. To do this it draws data from Open Street Map <span class="citation" data-cites="MHaklayWeber2008">(Haklay and Weber 2008)</span>, a user-generated map that now covers more than 80% of the global road network <span class="citation" data-cites="CBarrington-LeighMillard-Ball2017">(Barrington-Leigh and Millard-Ball 2017)</span>. First, I used a postcode-coordinate conversion table created by <span class="citation" data-cites="FreeMapTools2020">FreeMapTools (2020)</span> from Ordnance Survey, Royal Mail and ONS data, and then I used OSMNx to calculate the shortest distance by road from each postcode to its respective church, and then to visualize those routes on a map (Figure 3 shows that made for Mossley Hill).</p>
+<figure>
+<img src="../figures/catchment-distance.png" alt="" /><figcaption>Distances Church Members Travel to Respective Churches</figcaption>
+</figure>
+<p>The results (Figure 4) showed a clear difference between the close proximity of Mossley Hill’s congregation to their church’s building, and the greater geographical spread of the congregations of St Helens Christian Life Centre, Gateway Church, and the Stoneycroft Salvation Army. All of these three others are ‘nonconformist’ churches, which do not have the historic emphasis on the geographical parish which the Anglican church does.</p>
+<h1 id="an-interactive-data-dashboard">An Interactive Data Dashboard</h1>
+<p>My third attempt to do something to help church leaders extract useful insight from postcode data was more ambitious. Rather than do analysis myself that could then be passed on, I attempted to create an interactive data dashboard <span class="citation" data-cites="SFew2006">(Few 2006)</span> in the form of a mobile web app, so as to enable church leaders to directly and individually analyse their congregations’ postcodes.</p>
+<figure>
+<img src="../figures/churchmapp.png" alt="" /><figcaption>churchmAPP: Container View</figcaption>
+</figure>
+<p>To do this required creating a front-end visual user interface that would send API requests to a back-end server that would enable dynamic interaction with updateable data (as shown in Figure 5). In contemporary software development, the combination of different technologies that are used to enable an application are known as ‘the stack’, and a software developer that is involved with both the front-end and the back-end is known as a ‘full-stack developer’ <span class="citation" data-cites="CNorthwood2018">(Northwood 2018)</span>, which is variously considered an ideal to aspire to or an impossible and unhelpful myth (can any single individual truly master every layer involved in delivering a modern web application?)</p>
+<figure>
+<img src="../figures/app.png" alt="" /><figcaption>Screenshot of churchmAPP</figcaption>
+</figure>
+<p>I have had some prior experience in trying to develop a full-stack web application, but tried here to practise the combination of software development best practises which has become known as ‘DevOps’ (a portmanteau of ‘Development’ and ‘Operations’) <span class="citation" data-cites="MLoukides2012">(Loukides 2012)</span>: using a recognized branching methodology for source-control <span class="citation" data-cites="GitLab2020">(GitLab 2020)</span>, and setting up the app for continual integration and deployment <span class="citation" data-cites="ABajpai2019">(Bajpai 2019)</span>.</p>
+<p>A screenshot of the final result can be seen in Figure 6. Here an interactive slippy map is seen, using tiles made freely available by Open Street Map. The user is then able to enter a postcode and see a marker put down on the relevant position of the map. This is enabled by an API call to the server-side back-end application, which looks up the relevant latitude/longitude coordinates for the given postcode. The user is then able to label the marker, and this label is linked by the underlying Vue Javascript framework <span class="citation" data-cites="Vue2020">(Vue 2020)</span> with the pop-up tag that is made visible when the marker is clicked on.</p>
+<p>If the user wants their markers to be saved for the next time they engage with the app, then they just need to sign-up or log-in through the form at the top of the page. Implementing authentication functionality meant that I had to make sure I implemented cryptographic hashing of the passwords, so that the database is not directly storing the user’s password but is nevertheless able to ascertain when a matching password is entered. It is also necessary to validate a user whose identity has already been authenticated through the form: this is achieved by the use of JSON web tokens <span class="citation" data-cites="MJones2011">(Jones 2011)</span>.</p>
+<p>There is not space in this report to go into the details of how all this was implemented, but the reader is encouraged to visit the site <span class="citation" data-cites="churchmAPP2020">(churchmAPP 2020)</span> and examine the source code repository <span class="citation" data-cites="PPrescott2020c">(Prescott 2020)</span>.</p>
+<h1 id="conclusion">Conclusion</h1>
+<p>I have tried in this report to give an account of my activity in putting Geographic Data Science <span class="citation" data-cites="ASingletonArribas-Bel2019">(Singleton and Arribas-Bel 2019)</span> to the service of the local church, and to set that account in the context of the relevant academic literature. I believe I have achieved the challenge offered by the internship module specification, achieving three aims of increasing challenge.</p>
+<p>I believe that the responsiveness to my request to other churches for postcode data shows that this is an area of work which could be of significant usefulness. However, there remains much that could still be done. Particularly regarding my attempts at developing a full-stack geographic web app, I am torn in two directions: pleased to have created a functional piece of software in a short piece of time, and disappointed that the functionality it actually offers is so minimal! But I will leave it to others to judge the merits of my efforts.</p>
+<h1 class="unnumbered" id="references">References</h1>
+<div id="refs" class="references hanging-indent" role="doc-bibliography">
+<div id="ref-MAdnan2011">
+<p><span class="csl-baseline">Adnan, M.</span> 2011. <em>Towards real-time geodemographic information systems: Design, analysis and evaluation</em>. PhD Thesis, UCL (University College London).</p>
+</div>
+<div id="ref-ABajpai2019">
+<p><span class="csl-baseline">Bajpai, A.</span> 2019. Deploying to PythonAnywhere via GitHub. <em>Medium</em>.</p>
+</div>
+<div id="ref-CBarrington-LeighMillard-Ball2017">
+<p><span class="csl-baseline">Barrington-Leigh, C.</span>; <span class="csl-baseline">Millard-Ball, A.</span> 2017. The world’s user-generated road map is more than 80% complete. <em>PLOS ONE</em> 12: e0180698.</p>
+</div>
+<div id="ref-GBoeing2017">
+<p><span class="csl-baseline">Boeing, G.</span> 2017. OSMnx: New methods for acquiring, constructing, analyzing, and visualizing complex street networks. <em>Computers, Environment and Urban Systems</em> 65: 126–139.</p>
+</div>
+<div id="ref-SBruce2002">
+<p><span class="csl-baseline">Bruce, S.</span> 2002. <em>God is dead: Secularization in the West</em>. Vol. 3. Blackwell Oxford,.</p>
+</div>
+<div id="ref-CACI2020">
+<p><span class="csl-baseline">CACI</span>. 2020. Acorn - The smarter consumer classification | CACI..</p>
+</div>
+<div id="ref-churchmAPP2020">
+<p><span class="csl-baseline">churchmAPP</span>. 2020. churchmAPP..</p>
+</div>
+<div id="ref-CLC2020">
+<p><span class="csl-baseline">CLC</span>. 2020. St Helens Christian Life Centre Bringing Life &amp; Hope to our Community..</p>
+</div>
+<div id="ref-GCray2014">
+<p><span class="csl-baseline">Cray, G.</span> 2014. <em>Mission-shaped Church: Church planting and fresh expressions of church in a changing Context</em>. Canterbury Press,.</p>
+</div>
+<div id="ref-ADavisonMilbank2010">
+<p><span class="csl-baseline">Davison, A.</span>; <span class="csl-baseline">Milbank, A.</span> 2010. <em>For the Parish: A Critique of Fresh Expressions</em>. Hymns Ancient and Modern Ltd,.</p>
+</div>
+<div id="ref-LDolegaEtAl2016">
+<p><span class="csl-baseline">Dolega, L.</span>; <span class="csl-baseline">Pavlis, M.</span>; <span class="csl-baseline">Singleton, A.</span> 2016. Estimating attractiveness, hierarchy and catchment area extents for a national set of retail centre agglomerations. <em>Journal of Retailing and Consumer Services</em> 28: 78–90.</p>
+</div>
+<div id="ref-Experian2020">
+<p><span class="csl-baseline">Experian</span>. 2020. Mosaic | Marketing | Experian Business..</p>
+</div>
+<div id="ref-SFew2006">
+<p><span class="csl-baseline">Few, S.</span> 2006. <em>Information Dashboard Design: The Effective Visual Communication of Data</em>. O’Reilly Media, Inc.,.</p>
+</div>
+<div id="ref-FreeMapTools2020">
+<p><span class="csl-baseline">FreeMapTools</span>. 2020. Download UK Postcodes with Latitude and Longitude..</p>
+</div>
+<div id="ref-GFulopEtAl2011">
+<p><span class="csl-baseline">Fülöp, G.</span>; <span class="csl-baseline">Kopetsch, T.</span>; <span class="csl-baseline">Schöpe, P.</span> 2011. Catchment areas of medical practices and the role played by geographical distance in the patient’s choice of doctor. <em>The Annals of Regional Science</em> 46: 691–706.</p>
+</div>
+<div id="ref-CGaleEtAl2016a">
+<p><span class="csl-baseline">Gale, C.G.</span>; <span class="csl-baseline">Singleton, A.D.</span>; <span class="csl-baseline">Bates, A.G.</span>; <span class="csl-baseline">Longley, P.A.</span> 2016. Creating the 2011 area classification for output areas (2011 OAC). <em>Journal of Spatial Information Science</em> 2016: 1–27.</p>
+</div>
+<div id="ref-Gateway2020">
+<p><span class="csl-baseline">Gateway</span>. 2020. Gateway Church (Liverpool) United in Jesus..</p>
+</div>
+<div id="ref-GitLab2020">
+<p><span class="csl-baseline">GitLab</span>. 2020. Introduction to GitLab Flow. <em>Gitlab Docs</em>.</p>
+</div>
+<div id="ref-DGoodhewCooper2018">
+<p><span class="csl-baseline">Goodhew, D.</span>; <span class="csl-baseline">Cooper, A.-P.</span> 2018. <em>The Desecularisation of the City: London’s Churches, 1980 to the Present</em>. Routledge,.</p>
+</div>
+<div id="ref-MHaklayWeber2008">
+<p><span class="csl-baseline">Haklay, M.</span>; <span class="csl-baseline">Weber, P.</span> 2008. Openstreetmap: User-generated street maps. <em>IEEE Pervasive Computing</em> 7: 12–18.</p>
+</div>
+<div id="ref-MJones2011">
+<p><span class="csl-baseline">Jones, M.B.</span> 2011. The emerging JSON-based identity protocol suite. <em>W3C workshop on identity in the browser</em>: 1–3.</p>
+</div>
+<div id="ref-JKilpin2014">
+<p><span class="csl-baseline">Kilpin, J.</span> 2014. <em>Urban to the Core: Motives for Incarnational Mission</em>. Wipf and Stock Publishers,.</p>
+</div>
+<div id="ref-MLoukides2012">
+<p><span class="csl-baseline">Loukides, M.</span> 2012. <em>What is DevOps?</em> "O’Reilly Media, Inc.",.</p>
+</div>
+<div id="ref-DMcGavran1990">
+<p><span class="csl-baseline">McGavran, D.A.</span> 1990. <em>Understanding church growth</em>. Wm. B. Eerdmans Publishing,.</p>
+</div>
+<div id="ref-MossleyHillChurch2020a">
+<p><span class="csl-baseline">Mossley Hill Church</span>. 2020. The Electoral Roll Mossley Hill Church..</p>
+</div>
+<div id="ref-CNorthwood2018">
+<p><span class="csl-baseline">Northwood, C.</span> 2018. <em>The Full Stack Developer: Your Essential Guide to the Everyday Skills Expected of a Modern Full Stack Web Developer</em>. Springer,.</p>
+</div>
+<div id="ref-ONS2016">
+<p><span class="csl-baseline">ONS</span>. 2016. Output Areas (OA) Boundaries..</p>
+</div>
+<div id="ref-ONS2018">
+<p><span class="csl-baseline">ONS</span>. 2018. Postcode to Output Area to Lower Layer Super Output Area to Middle Layer Super Output Area to Local Authority District (February 2018) Lookup in the UK..</p>
+</div>
+<div id="ref-JPearce2000">
+<p><span class="csl-baseline">Pearce, J.</span> 2000. Techniques for defining school catchment areas for comparison with census data. <em>Computers, Environment and Urban Systems</em> 24: 283–303.</p>
+</div>
+<div id="ref-LPope1957">
+<p><span class="csl-baseline">Pope, L.</span> 1957. <em>The kingdom beyond caste</em>. Friendship Press,.</p>
+</div>
+<div id="ref-PPrescott2020c">
+<p><span class="csl-baseline">Prescott, P.</span> 2020. churchmAPP GitHub Repository..</p>
+</div>
+<div id="ref-SalvationArmy2020">
+<p><span class="csl-baseline">Salvation Army</span>. 2020. Liverpool Stoneycroft | The Salvation Army..</p>
+</div>
+<div id="ref-ASingletonArribas-Bel2019">
+<p><span class="csl-baseline">Singleton, A.</span>; <span class="csl-baseline">Arribas-Bel, D.</span> 2019. Geographic data science. <em>Geographical Analysis</em>.</p>
+</div>
+<div id="ref-PSleight1997">
+<p><span class="csl-baseline">Sleight, P.</span> 1997. <em>Targeting Customers: How to Use Geodemographic and Lifestyle Data in Your Business</em>. 2nd Revised edition edition ed. NTC Publications, Oxfordshire,.</p>
+</div>
+<div id="ref-CTaylor2007a">
+<p><span class="csl-baseline">Taylor, C.</span> 2007. <em>A secular age</em>. Harvard university press,.</p>
+</div>
+<div id="ref-Vue2020">
+<p><span class="csl-baseline">Vue</span>. 2020. Vue.Js..</p>
+</div>
+<div id="ref-CWagner1978">
+<p><span class="csl-baseline">Wagner, C.P.</span> 1978. How Ethical is the Homogeneous Unit Principle? <em>Occasional Bulletin of Missionary Research</em> 2: 12–19.</p>
+</div>
+</div>
+<!-- <nav id="toc" data-toggle="toc"></nav> -->
+
+</body>
+</html>

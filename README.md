@@ -6,9 +6,9 @@ A Data Science Project for Mossley Hill Church, as part of my MSc/PhD at the Uni
 > The student will work on a research project defined between the student and an external organisation.
 >
 > The aims of the placement will be defined in terms of progressive risks in effecting a solution:
-- The first aim should have a low risk of failure;
-- the second aim will be more challenging but capable of solution given initiative and energy on the part of the student;
-- and the third aim can have a 'blue skies' element, a real research challenge and consequently a high risk of failure but success will demonstrate exceptional competence and initiative.
+> - The first aim should have a low risk of failure;
+> - the second aim will be more challenging but capable of solution given initiative and energy on the part of the student;
+> - and the third aim can have a 'blue skies' element, a real research challenge and consequently a high risk of failure but success will demonstrate exceptional competence and initiative.
 
 ## The Partner
 Mossley Hill Anglican Church. A family church in South Liverpool.
@@ -22,4 +22,4 @@ To transform the church members' postcode data into useful insight.
 2. Catchment Area Analysis
 3. Developing a Data Dashboard
 
-See [my report](./report.pdf) for details.
+See [my report](./pdf/report.pdf) for details.
