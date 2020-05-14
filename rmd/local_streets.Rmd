@@ -36,7 +36,7 @@ mile = 1609 # metres
 ```
 
 ```{python}
-pcdlatlng = pd.read_csv('csv/pcdlatlng.csv')
+pcdlatlng = pd.read_csv('../data/csv/pcdlatlng.csv')
 ```
 
 ```{python}

@@ -27,7 +27,7 @@ location = {'mossleyhill' : 'L18 8DB',
 
 mile = 1609 # metres
 
-pcdlatlng = pd.read_csv('csv/pcdlatlng.csv')
+pcdlatlng = pd.read_csv('../data/csv/pcdlatlng.csv')
 
 
 def get_coords(postcode):

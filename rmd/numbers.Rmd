@@ -19,7 +19,7 @@ import os.path
 ```
 
 ```{python}
-numbers = pd.read_excel('sensitive/mossley-hill-numbers.xlsx',sheet_name=None)
+numbers = pd.read_excel('../data/sensitive/mossley-hill-numbers.xlsx',sheet_name=None)
 ```
 
 ```{python}

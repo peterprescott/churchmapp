@@ -13,6 +13,11 @@ jupyter:
     name: python3
 ---
 
+# Test API
+
+
+First make sure that you have the backend server running: in the `backend` folder, `python run.py`
+
 ```{python}
 import requests, json
 ```
@@ -52,14 +57,4 @@ requests.put('http://localhost:5000/churches/1',
 
 ```{python}
 requests.delete('http://localhost:5000/churches/1')
-```
-
-# Other API points
-
-```{python}
-
-```
-
-```{python}
-
 ```

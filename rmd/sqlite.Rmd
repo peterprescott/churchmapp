@@ -13,12 +13,10 @@ jupyter:
     name: python3
 ---
 
-```{python}
-# ! cp ../backend/main.db sensitive/main.db
-```
+# Database Inspection and Migration
 
 ```{python}
-# ! cp sensitive/main.db ../backend/main.db
+# ! cp ../backend/main.db ../data/sensitive/main.db
 ```
 
 ```{python}
@@ -29,7 +27,7 @@ import os.path
 ```
 
 ```{python}
-db = create_engine('sqlite:///sensitive/main.db')
+db = create_engine('sqlite:///../data/sensitive/main.db')
 ```
 
 ```{python}
@@ -40,10 +38,6 @@ SELECT * FROM churches
 
 ```{python}
 pd.read_sql(query, db)
-```
-
-```{python}
-
 ```
 
 ```{python}
@@ -67,22 +61,6 @@ pd.read_sql(qr3, db)
 ```
 
 ```{python}
-from passlib.hash import pbkdf2_sha256
-```
-
-```{python}
-hash = pbkdf2_sha256.hash('simple')
-```
-
-```{python}
-pbkdf2_sha256.verify('simple',hash)
-```
-
-```{python}
-hash
-```
-
-```{python}
 qry4 = """
 PRAGMA table_info(churches)
 """
@@ -93,11 +71,5 @@ pd.read_sql(qry4, db)
 ```
 
 ```{python}
-qry5 = """
-DROP TABLE users
-"""
-```
-
-```{python}
-pd.read_sql(qry5, db)
+# # ! cp ../data/sensitive/main.db ../backend/main.db
 ```

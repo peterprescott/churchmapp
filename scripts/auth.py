@@ -13,18 +13,13 @@
 #     name: python3
 # ---
 
-# +
+# # Test Authentication
+
 import requests, json
 
-API = 'http://localhost:5000/'
-# -
+# First make sure backend server is running: from `backend` folder, run `python run.py`
 
-requests.post(API+'register',
-              headers={'Content-Type': 'application/json'},
-              data=json.dumps({
-                               'email':'jack' ,
-                               'password': 'white',
-              })).json()   
+API = 'http://localhost:5000/'
 
 auth = requests.post(API+'auth',
               headers={'Content-Type': 'application/json'},

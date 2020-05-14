@@ -13,6 +13,10 @@
 #     name: python3
 # ---
 
+# # Test API
+
+# First make sure that you have the backend server running: in the `backend` folder, `python run.py`
+
 import requests, json
 
 api = 'http://localhost:5000/'
@@ -41,9 +45,3 @@ requests.put('http://localhost:5000/churches/1',
             })).json()
 
 requests.delete('http://localhost:5000/churches/1')
-
-# # Other API points
-
-
-
-

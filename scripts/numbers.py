@@ -16,7 +16,7 @@
 import pandas as pd
 import os.path
 
-numbers = pd.read_excel('sensitive/mossley-hill-numbers.xlsx',sheet_name=None)
+numbers = pd.read_excel('../data/sensitive/mossley-hill-numbers.xlsx',sheet_name=None)
 
 for key in numbers:
     print(key)
