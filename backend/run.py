@@ -1,6 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python 
 
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify 
 from flaskext.markdown import Markdown
 from flask_restful import Api, Resource
 from flask_cors import CORS

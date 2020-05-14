@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+passlib = "*"
+python-jwt = "*"
+Flask = "*"
+Flask-RESTful = "*"
+SQLAlchemy = "*"
+Flask-Cors = "*"
+Flask-JWT = "*"
+GitPython = "*"
+Flask-Markdown = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
