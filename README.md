@@ -22,4 +22,12 @@ To transform the church members' postcode data into useful insight.
 2. Catchment Area Analysis
 3. Developing a Data Dashboard
 
-See [my report](./pdf/report.pdf) for details.
+## Outputs
+
+You can read [my report](./pdf/report.pdf).
+
+You can interact with [my notebooks](../notebooks/).
+
+You can visit the [churchmAPP website](https://churchmapp.netlify.com).
+
+Or you can clone this repo and contribute to the development of churchmAPP.
