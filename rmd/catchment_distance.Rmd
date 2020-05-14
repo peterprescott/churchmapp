@@ -109,6 +109,7 @@ colors = ['red','yellow','green','blue']
 church_name = ['Mossley Hill', 'St Helens', 'Gateway', 'Stoneycroft Salvation Army']
 
 fig, axs = plt.subplots(2,2,figsize=(20,10))
+fontsize = 20
 for i, church in enumerate(churches):
     j = i//2
     k = i%2
@@ -117,12 +118,16 @@ for i, church in enumerate(churches):
     data[church].Distance.plot.kde(ax=ax2,c='black',lw=3)
     data[church].Distance.hist(ax=ax, bins=20,facecolor=colors[i],edgecolor='black')
     ax2.set_ylim(0,0.7)
-    ax.set_ylabel('Number of People')
-    ax.set_xlabel('Distance by Road (miles)')
+    ax2.set_ylabel('')
+    ax2.set_yticks([])
+    ax2.tick_params(labelsize=fontsize)
+    ax.tick_params(labelsize=fontsize)
+    ax.set_ylabel('Number of People',fontsize=fontsize)
+    ax.set_xlabel('Distance by Road (miles)',fontsize=fontsize)
     ax.set_xlim(0,20)
-    ax.set_title(f'{church_name[i]}')
-plt.tight_layout()
-plt.suptitle('Distances People Travel to Church',y=0)
+    ax.set_title(f'{church_name[i]}',y=0.6,fontsize=fontsize)
+# plt.tight_layout()
+# plt.suptitle('Distances People Travel to Church',y=0,fontsize=fontsize)
 plt.show()
 ```
 
