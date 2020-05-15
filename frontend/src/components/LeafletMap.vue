@@ -268,7 +268,9 @@ export default {
                 },
           {headers:{'JWT':this.token}},
           ).then(function(response) {place.saved=true; place.id=response.data.id})
-				.catch(() => console.log() )
+					.catch(function() {
+						alert('Postcodes must have a name to be saved!')
+					}  )
           
       },
       
