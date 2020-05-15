@@ -8,13 +8,13 @@
 </template>
 
 <script>
-import LoginNav from './components/LoginNav.vue'
+/* import LoginNav from './components/LoginNav.vue' */
 import LeafletMap from './components/LeafletMap.vue'
 
 export default {
   name: 'App',
   components: {
-		LoginNav,
+		/* LoginNav, */
     LeafletMap,
   }
 }
