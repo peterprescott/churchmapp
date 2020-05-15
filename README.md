@@ -31,3 +31,34 @@ You can interact with [my notebooks](./notebooks/).
 You can visit the [churchmAPP website](https://churchmapp.netlify.com).
 
 Or you can clone this repo and contribute to the development of churchmAPP.
+
+## Collaboration
+
+If you are interested in collaborating, or just exploring this analysis yourself, then this may be made easier by the use of Docker containers.
+
+For the notebooks, start from this root of the repository:
+```
+docker run -it -p 8888:8888 -v $PWD:/home/jovyan/work peterprescott/geodatascience:0.1
+```
+
+For the frontend of the website, `cd frontend` into that folder, and then:
+```
+docker run -it -p 8080:8080 -v $PWD:/src peterprescott/frontend:0.1
+```
+
+And for the backend, `cd backend` into that folder, and then:
+```
+docker run -it -p 5000:5000 -v $PWD:/app peterprescott/backend:0.1
+```
+
+Or just run the `docker-for-WHATEVER.sh` script in the relevant directory. This will pull the necessary images for you from the online Docker Hub. The `geodatascience` image in particular is large, and may take some time to download -- but it should include everything you might need!
+
+Note that if you are not familiar with Docker and you are familiar with Jupyter notebooks, or the Vue-CLI, or Flask, then this may be (in the short-term) more hassle than it is worth.
+
+## Licenses
+
+Insofar as this is my work, it is available under the MIT License. I have tried to track my references in the `.bib` file in the `bits` folder.
+
+The geographic data includes Ordnance Survey and ONS data (Open Government License), and I think also Royal Mail data.
+
+The churches' data I do not share, although I make visible the results of my analysis. If you want to do a precisely equivalent analysis, just put a column of postcodes under the heading `Postcode` in a .csv file in `/data/sensitive/postcodes/`.
