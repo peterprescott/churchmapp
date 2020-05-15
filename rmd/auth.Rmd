@@ -13,7 +13,10 @@ jupyter:
     name: python3
 ---
 
-# Test Authentication
+# Test Authentication and JWT validation
+
+
+## Use `requests` to engage with the API
 
 ```{python}
 import requests, json
@@ -26,26 +29,118 @@ API = 'http://localhost:5000/'
 ```
 
 ```{python}
-auth = requests.post(API+'auth',
+requests.get(API).text
+```
+
+## Authentication should give you back a JSON Web Token
+
+```{python}
+jimmy = requests.post(API+'auth',
               headers={'Content-Type': 'application/json'},
               data=json.dumps({
-                               'email':'jack' ,
-                               'password': 'white',
+                               'email':'jimmy' ,
+                               'password': 'strawberry',
               })).json()   
 ```
 
 ```{python}
-jwt = auth['JWT']
+jimmy
 ```
 
 ```{python}
-jwt
+jam = requests.post(API+'auth',
+              headers={'Content-Type': 'application/json'},
+              data=json.dumps({
+                               'email':'jam' ,
+                               'password': 'strawberry',
+              })).json()   
 ```
 
 ```{python}
-requests.post(API+'validate',
+jam
+```
+
+```{python}
+requests.post(API+'auth',
               headers={
                   'JWT': jwt,
                   'Content-Type': 'application/json'},
+                data=json.dumps({
+                                       'email':'jam' ,
+                                       'password': 'strawberry',
+                }
+                )
               ).json()   
+```
+
+## Valid JWT necessary to post new place
+
+```{python}
+requests.post(API+'places',
+              headers={
+                  'JWT': jam['JWT'],
+                  'Content-Type': 'application/json'},
+                data=json.dumps({
+                                       'postcode': 'L1 4BS',
+                                        'latitude': '3.1',
+                                        'longitude': '5.6',
+                                        'name': 'strawberry place'
+                }
+                )
+              ).json()   
+```
+
+```{python}
+requests.post(API+'places',
+              headers={
+                  'JWT': jimmy['JWT'],
+                  'Content-Type': 'application/json'},
+                data=json.dumps({
+                                       'postcode': 'L1 4BS',
+                                        'latitude': '3.1',
+                                        'longitude': '5.6',
+                                        'name': 'jimmys house'
+                }
+                )
+              ).json()   
+```
+
+## User can only `get` their own places, and only with valid JWT
+
+```{python}
+requests.get(API+'places',
+            headers={'JWT':jwt}).json()
+```
+
+```{python}
+requests.get(API+'places',
+            headers={'JWT':jimmy['JWT']}).json()
+```
+
+```{python}
+requests.get(API+'places',
+            headers={'JWT':jam['JWT']}).json()
+```
+
+## User can only `delete` their own places, and only with valid JWT
+
+```{python}
+deletion = requests.delete(API+f'places/13', headers={'JWT':jam['JWT']})
+
+deletion.status_code
+```
+
+```{python}
+deletion = requests.delete(API+f'places/13', headers={'JWT':jimmy['JWT']})
+deletion.status_code
+```
+
+```{python}
+requests.get(API+'places',
+            headers={'JWT':jimmy['JWT']}).json()
+```
+
+```{python}
+requests.get(API+'places',
+            headers={'JWT':jam['JWT']}).json()
 ```

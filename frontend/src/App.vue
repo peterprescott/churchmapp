@@ -2,7 +2,7 @@
   <div id="app">
 		<LoginNav />
 		<LeafletMap 
-			apiURL="https://churchmapp.pythonanywhere.com"
+			apiURL="http://localhost:5000"
 		  />
   </div>
 </template>

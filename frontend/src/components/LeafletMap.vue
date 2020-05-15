@@ -19,7 +19,8 @@
             </ul>
 					</form>
         </nav>
-				<p v-if="connected">Signed in as {{ email }}.</p>
+				<p v-if="connected">Signed in as {{ email }}. <br> 
+					<a @click="signOut"><strong>[Click here to Sign Out]</strong></a></p>
 			</div>
     </div>
 	</header>
@@ -73,13 +74,14 @@
 	</div>
 
 	<div id="marker-table">
-      <table class="table table-hover">
+      <table class="table table-hover" v-if="markers.length">
 				<thead>
         <tr>
 					<!--					<th>[ @ ]</th> -->
+          <th scope="col">[ X ]</th>
           <th scope="col">Name</th>
           <th scope="col">Postcode</th>
-          <th scope="col">[ X ]</th>
+          <th scope="col" v-if="connected">[ SAVE ]</th>
         </tr>
 			</thead>
 			<tbody>
@@ -87,26 +89,44 @@
           v-for="(item, index) in markers"
           :key="index"
         >
-					<!-- <td><button @click="centerUpdate(
+	        <td style="text-align: center">
+            <input v-if="!item.saved"
+              type="button"
+              value="X"
+							class="btn btn-dark"
+              @click="removeMarker(index)"
+            >
+            <input v-if="item.saved"
+              type="button"
+              value="X"
+							class="btn btn-danger"
+              @click="unSave(index)"
+            >
+          </td>
+ 				<!-- <td><button @click="centerUpdate(
 							item.latitude, 
 							item.longitude)">@</button></td> -->
           <td>
-            <input
+            <input v-if="!item.saved"
               v-model.text="item.name"
               type="text"
             >
+              <span v-if="item.saved">{{ item.name }}</span>
           </td>
           <td>
 						{{ item.postcode }}
           </td>
-          <td style="text-align: center">
-            <input
+					<td v-if="connected" 
+						style="text-align: center">
+            <input v-if="!item.saved"
               type="button"
-              value="X"
-              @click="removeMarker(index)"
+						  class="btn btn-info"
+              value="SAVE"
+              @click="savePlace(index)"
             >
+                        <span v-if="item.saved">(SAVED)</span>
           </td>
-        </tr>
+       </tr>
 			</tbody>
       </table>
      	</div>
@@ -135,7 +155,7 @@ export default {
 	},
   data() {
     return {
-						email:'',
+			email:'',
 			password:'',
 			connected: false,
 			token: '',
@@ -162,10 +182,9 @@ export default {
     };
   },
   methods: {
-				auth() {
+		auth() {
 			console.log('Authenticating...')
-			const API='https://churchmapp.pythonanywhere.com/auth';
-			axios.post(API,
+			axios.post(this.api+'/auth',
 			 { email: this.email, password: this.password } 
 			).then((response) => this.authSuccess(response))
 				.catch(() => this.authFail() )
@@ -175,7 +194,9 @@ export default {
 			if (!response.data.JWT) { this.authFail(); return }
 			this.token = response.data.JWT;
 			this.connected = true;
-			console.log('Connected!')
+            this.password = '';
+			console.log('Connected!');
+            this.getPlaces()
 
 		},
 		authFail() {
@@ -183,9 +204,68 @@ export default {
 			this.connected = false;
 			console.log('Failed.')
 		},
+       
+       signOut() {
+           this.token='';
+           this.connected=false;
+           this.markers = [];
+           this.email='';
+           console.log('Signed Out.')
+       },
+      
+       getPlaces() {
+           console.log('Getting Places')
+          axios.get(this.api+'/places',
+            {headers:{'JWT':this.token}}
+            )
+          .then((response) => this.addPlaces(response.data)
+)
+				.catch(() => console.log() )
+       },
+      
+      addPlaces(data) {
+          console.log('adding places');
+          console.log(data.places);
+             for (let i = 0; i < data.places.length; i++){
+                 data.places[i].saved = true;
+                 data.places[i].coords = {
+                     lat: data.places[i].latitude,
+                     lng: data.places[i].longitude
+                 };
+                data.places[i].position = data.places[i].coords; 
+                 data.places[i].visible = true;
+   this.markers.push(data.places[i]) ;
+            }         
+      },
+      
+      savePlace(index) {
+          let place = this.markers[index];
+          
+          axios.post(this.api+'/places',
+           {
+                         'postcode': place.postcode,
+                         'latitude': place.latitude,
+                         'longitude': place.longitude,
+                         'name': place.name,
+                },
+          {headers:{'JWT':this.token}},
+          ).then(function(response) {place.saved=true; place.id=response.data.id})
+				.catch(() => console.log() )
+          
+      },
+      
+
+      unSave(index) {
+          let place = this.markers[index];
+          axios.delete(this.api+'/places/'+place.id,
+                     {headers:{'JWT':this.token}},
+          ).then(function(response){ place.saved=false;})
+				.catch(() => console.log() )
+          
+      },
 
 		getCoords() {
-			const path = this.api + '/convert/' + this.postcode;
+          let path = this.api + '/convert/' + this.postcode;
       axios.get(path)
         .then((response) => {
 					this.coords = {
@@ -199,15 +279,14 @@ export default {
           console.error(error);
         });
     },
+      
 		addMarker(position) {
       const newMarker = {
 				position: position,
 				postcode: this.postcode,
-				latitude: this.latitude,
-				longitude: this.longitude,
-				name: this.name,
-				owner: this.email,
-        visible: true,
+				latitude: position.lat,
+				longitude: position.lng,
+              saved:false,
       };
       this.markers.push(newMarker);
 			this.center=this.coords;
@@ -216,6 +295,10 @@ export default {
 		removeMarker: function(index) {
       this.markers.splice(index, 1);
     },
+		saveMarker(index) {
+			console.log(this.markers[index])
+
+		},
 
 		markPostcode(){
 			console.log(this.postcode);

@@ -1,6 +1,7 @@
 
-from models import Todo, Converter, Church, User
+from models import Todo, Converter, Place, User
 from db import session
+
 from flask_restful import reqparse
 from flask_restful import abort
 from flask_restful import Resource
@@ -9,6 +10,9 @@ from flask_restful import marshal_with
 import git
 import os.path
 from passlib.hash import pbkdf2_sha256
+import python_jwt as jwt, jwcrypto.jwk as jwk
+
+JWT_security_key = jwk.JWK.generate(kty='RSA', size=2048)
 
 
 todo_fields = {
@@ -24,14 +28,14 @@ converter_fields = {
     'longitude': fields.Float
 }
 
-church_fields = {
+place_fields = {
     'id': fields.Integer,
     'postcode': fields.String,
     'latitude': fields.Float,
     'longitude': fields.Float,
     'name': fields.String,
-    'website': fields.String,
-    'uri': fields.Url('church', absolute=True),
+    'userid': fields.Integer,
+    'uri': fields.Url('place', absolute=True),
 }
 
 parser = reqparse.RequestParser()
@@ -40,7 +44,7 @@ parser.add_argument('postcode', type=str)
 parser.add_argument('latitude', type=float)
 parser.add_argument('longitude', type=float)
 parser.add_argument('name', type=str)
-parser.add_argument('user', type=str)
+parser.add_argument('JWT', type=str, location='headers')
 
 
 class TodoResource(Resource):
@@ -84,50 +88,74 @@ class TodoListResource(Resource):
         return todo, 201
 
 
-class ChurchResource(Resource):
-    @marshal_with(church_fields)
+class PlaceResource(Resource):
+    @marshal_with(place_fields)
     def get(self, id):
-        church = session.query(Church).filter(Church.id==id).first()
-        if not church:
-            abort(404, message="Church {} is not in our database".format(id))
-        return church
+        place = session.query(Place).filter(Place.id==id).first()
+        if not place:
+            abort(404, message="Place {} is not in our database".format(id))
+        return place 
 
     def delete(self, id):
-        church = session.query(Church).filter(Church.id == id).first()
-        if not church:
-            abort(404, message="Church {} doesn't exist".format(id))
-        session.delete(church)
+        place = session.query(Place).filter(Place.id == id).first()
+        if not place:
+            abort(404, message="Place {} doesn't exist".format(id))
+        session.delete(place)
         session.commit()
         return {}, 204
 
-    @marshal_with(church_fields)
-    def put(self, id):
-        parsed_args = parser.parse_args()
-        church = session.query(Church).filter(Church.id == id).first()
-        church.postcode=parsed_args['postcode'],
-        church.name=parsed_args['name'],
-        church.website=parsed_args['website'],
-        church.latitude=parsed_args['latitude'],
-        church.longitude=parsed_args['longitude'],
-        session.add(church)
-        session.commit()
-        return church, 201
-
-
-class ChurchListResource(Resource):
-    @marshal_with(church_fields)
+class PlaceListResource(Resource):
+    @marshal_with(place_fields)
     def get(self):
-        churches = session.query(Church).all()
-        return churches
+        try:
+            parsed_args = parser.parse_args()
+            token = parsed_args['JWT']
+            header, claims = jwt.verify_jwt(token, JWT_security_key, ['PS256'])
+            userid = claims['userid']
+            payload = {'userid': userid}
+            new_token = jwt.generate_jwt(
+                payload, JWT_security_key, 
+                'PS256', timedelta(minutes=15))
+            message = 'Token validation successful'
 
-    @marshal_with(church_fields)
+            places = session.query(Place).filter(Place.userid==userid).all()
+            return places, 202
+        except Exception as e:
+            return 'validation failed', 401
+
+        return places
+
+    @marshal_with(place_fields)
     def post(self):
         parsed_args = parser.parse_args()
 
-        church = Church(postcode=parsed_args['postcode'],latitude=parsed_args['latitude'], longitude=parsed_args['longitude'], name=parsed_args['name'], user=parsed_args['user'])
-        session.add(church)
+        place = Place(
+            postcode=parsed_args['postcode'],
+            latitude=parsed_args['latitude'], 
+            longitude=parsed_args['longitude'], 
+            name=parsed_args['name'], 
+            userid=parsed_args['userid']
+        )
+        session.add(place)
         session.commit()
-        return church, 201
+        return place, 201
+### JWT validation
+# @app.route('/validate', methods=['POST'])
+# def validate():
+#     try:
+#         token = request.headers.get('JWT')
+#         header, claims = jwt.verify_jwt(token, JWT_security_key, ['PS256'])
+#         email = claims['email']
+#         payload = {'email': email}
+#         new_token = jwt.generate_jwt(
+#             payload, JWT_security_key, 
+#             'PS256', timedelta(minutes=15))
+#         message = 'Token validation successful'
+
+#         return jsonify({'message': message,
+#                         'JWT': new_token}), 202
+#     except Exception as e:
+#         return jsonify({'message': 'Validation failed'}), 401
 
 
 class ConverterResource(Resource):

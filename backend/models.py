@@ -4,6 +4,7 @@ from sqlalchemy import Column
 from sqlalchemy import Integer
 from sqlalchemy import Float
 from sqlalchemy import String
+from sqlalchemy import UniqueConstraint
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -22,28 +23,21 @@ class Converter(Base):
     latitude = Column(Float)
     longitude = Column(Float)
 
-class Church(Base):
-    __tablename__ = 'churches'
+class Place(Base):
+    __tablename__ = 'places'
 
     id = Column(Integer, primary_key=True)
     postcode = Column(String(255))
     latitude = Column(Float)
     longitude = Column(Float)
     name = Column(String(255))
-    user = Column(String(255))
-
-class Member(Base):
-    __tablename__ = 'members'
-
-    id = Column(Integer, primary_key=True)
-    postcode = Column(String(255))
-    sex = Column(String(1))
-    church = Column(String(255))
+    userid = Column(Integer)
 
 class User(Base):
     __tablename__ = 'users'
 
-    email = Column(String(255), primary_key=True)
+    id = Column(Integer, primary_key=True)
+    email = Column(String(255), unique=True)
     password_hash = Column(String(255))
 
 if __name__ == "__main__":

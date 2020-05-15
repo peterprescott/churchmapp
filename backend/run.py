@@ -105,7 +105,8 @@ def post_place():
         session.commit()
         message = 'Token validation successful and place added.'
 
-        return jsonify({'message': message,
+        return jsonify({'id': place.id,
+                        'message': message,
                         'JWT': new_token}), 202
     
     except Exception as e:
