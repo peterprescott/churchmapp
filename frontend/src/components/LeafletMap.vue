@@ -56,37 +56,18 @@
 	
 			<div class="col-auto">
 			<div class="col">
-				<input v-if="!longPostcode"
-					ref="normalinput"
-					placeholder='Enter one or more postcodes'
-					v-model='postcode' class ="mb-2 mr-2 mt-2 form-control" 
-				@keyup.enter='markPostcode'
-				@keypress="checkLength"
-			>
 			<textarea 
-				 v-if="longPostcode" 
-				ref="biginput"
 				v-model='multiplePostcodes'
 				class="mb-2 mr-2 mt-2 form-control"
-				placeholder='You can enter MULTIPLE POSTCODES if you separate them with a linebreak. But for the moment they must be capitalized and with the proper single space between the first and second part. If it is not written precisely it will (at the moment) fail.' 
+				placeholder='Postcodes should be spaced, capitalized, and separated by a line break.'
 	
 				@keypress="checkLength"
 				@keyup.enter='markPostcodes'
-				rows="1" cols="50"
+				rows="2" cols="50"
 			>
 			</textarea>
 				</div><div class="col">
-     <button
-			 v-if="!longPostcode"
-        name="button"
-				type="button"
-				class="btn btn-info mb-2"
-        @click="markPostcode"
-      >
-        Mark Postcode
-    </button>
 	     <button
-				 v-if="longPostcode"
         name="button"
 				type="button"
 				class="btn btn-info mb-2"
