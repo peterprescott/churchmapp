@@ -59,7 +59,7 @@
 			<textarea 
 				v-model='multiplePostcodes'
 				class="mb-2 mr-2 mt-2 form-control"
-				placeholder='Postcodes should be spaced, capitalized, and separated by a line break.\n[LOGIN/REGISTER] to save locations and labels.'
+				placeholder='Postcodes should be spaced, capitalized, and separated by a line break. Login to save locations and labels.'
 	
 				@keypress="checkLength"
 				@keyup.enter='markPostcodes'
