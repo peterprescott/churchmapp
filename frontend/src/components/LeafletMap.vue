@@ -63,7 +63,8 @@
 				@keyup.enter='markPostcode'
 				@keypress="checkLength"
 			>
-			<textarea v-if="longPostcode"
+			<textarea 
+				 v-if="longPostcode" 
 				ref="biginput"
 				v-model='multiplePostcodes'
 				class="mb-2 mr-2 mt-2 form-control"
@@ -71,7 +72,7 @@
 	
 				@keypress="checkLength"
 				@keyup.enter='markPostcodes'
-				rows="4" cols="50"
+				rows="1" cols="50"
 			>
 			</textarea>
 				</div><div class="col">
@@ -300,15 +301,15 @@ export default {
           
       },
 
-		getCoords() {
-          let path = this.api + '/convert/' + this.postcode;
+		getCoords(postcode) {
+          let path = this.api + '/convert/' + postcode;
       axios.get(path)
         .then((response) => {
 					this.coords = {
 						lat: response.data.latitude, 
 						lng: response.data.longitude
 					},
-					this.addMarker(this.coords);
+					this.addMarker(this.coords, postcode);
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -316,10 +317,10 @@ export default {
         });
     },
       
-		addMarker(position) {
+		addMarker(position, postcode) {
       const newMarker = {
 				position: position,
-				postcode: this.postcode,
+				postcode: postcode,
 				latitude: position.lat,
 				longitude: position.lng,
               saved:false,
@@ -337,11 +338,9 @@ export default {
 		},
 
 		markPostcode(){
-			console.log(this.postcode);
-			this.getCoords()
+			this.getCoords(this.postcode)
 		},
 		markPostcodes(){
-			console.log(this.multiplePostcodes);
 			let postcodeList = this.multiplePostcodes.split('\n')
 			for (let i=0;i<postcodeList.length;i++){
 				this.postcode = postcodeList[i];
