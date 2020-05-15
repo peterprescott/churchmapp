@@ -220,6 +220,7 @@ export default {
 		authFail() {
 			this.token='';
 			this.connected = false;
+			alert('Authentication failed! Did you enter your email and password correctly?')
 			console.log('Failed.')
 		},
        
