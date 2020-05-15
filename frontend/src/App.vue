@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 		<LeafletMap 
-			apiURL="https://00churchmapp.pythonanywhere.com"
+			apiURL="https://churchmapp.pythonanywhere.com"
 		  />
   </div>
 </template>
