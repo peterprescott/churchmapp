@@ -35,8 +35,7 @@
       style="height: 80%"
       @update:center="centerUpdate"
       @update:zoom="zoomUpdate"
-    >
-      <l-tile-layer
+    > <l-tile-layer
         :url="url"
         :attribution="attribution"
       />
@@ -57,12 +56,27 @@
 	
 			<div class="col-auto">
 			<div class="col">
-			<input v-model='postcode' 
-				class ="mb-2 mr-2 mt-2 form-control"
-				placeholder='Enter Postcode'
-			  @keyup.enter='markPostcode'>
+				<input v-if="!longPostcode"
+					ref="normalinput"
+					placeholder='Enter one or more postcodes'
+					v-model='postcode' class ="mb-2 mr-2 mt-2 form-control" 
+				@keyup.enter='markPostcode'
+				@keypress="checkLength"
+			>
+			<textarea v-if="longPostcode"
+				ref="biginput"
+				v-model='multiplePostcodes'
+				class="mb-2 mr-2 mt-2 form-control"
+				placeholder='You can enter MULTIPLE POSTCODES if you separate them with a linebreak. But for the moment they must be capitalized and with the proper single space between the first and second part. If it is not written precisely it will (at the moment) fail.' 
+	
+				@keypress="checkLength"
+				@keyup.enter='markPostcodes'
+				rows="4" cols="50"
+			>
+			</textarea>
 				</div><div class="col">
      <button
+			 v-if="!longPostcode"
         name="button"
 				type="button"
 				class="btn btn-info mb-2"
@@ -70,7 +84,16 @@
       >
         Mark Postcode
     </button>
-	</div>
+	     <button
+				 v-if="longPostcode"
+        name="button"
+				type="button"
+				class="btn btn-info mb-2"
+        @click="markPostcodes"
+      >
+        Mark Postcodes
+    </button>
+</div>
 	</div>
 
 	<div id="marker-table">
@@ -132,6 +155,7 @@
      	</div>
 
   </div>
+
 </div>
 </template>
 
@@ -139,7 +163,6 @@
 import { latLng, latLngBounds } from "leaflet";
 import { LMap, LTileLayer, LMarker, LPopup, LTooltip } from "vue2-leaflet";
 import axios from 'axios';
-
 
 export default {
   name: "LeafletMap",
@@ -159,9 +182,11 @@ export default {
 			password:'',
 			connected: false,
 			token: '',
+			longPostcode: false,
 
 			api: this.apiURL,
-			postcode: 'L18 8DB',
+			postcode: '',
+			multiplePostcodes: '',
 			coords: '',
 			markers: [],
       zoom: 15,
@@ -182,6 +207,17 @@ export default {
     };
   },
   methods: {
+		
+
+		checkLength() {
+			if (this.postcode.length > 7) {
+				this.longPostcode = true;
+			}
+			/* if (this.multiplePostcodes.length < 8) { */
+			/* 	this.longPostcode = false; */
+			/* } */
+		},
+
 		auth() {
 			console.log('Authenticating...')
 			axios.post(this.api+'/auth',
@@ -304,6 +340,17 @@ export default {
 			console.log(this.postcode);
 			this.getCoords()
 		},
+		markPostcodes(){
+			console.log(this.multiplePostcodes);
+			let postcodeList = this.multiplePostcodes.split('\n')
+			for (let i=0;i<postcodeList.length;i++){
+				this.postcode = postcodeList[i];
+				this.markPostcode();
+
+			}
+			/* this.getCoords() */
+		},
+
     zoomUpdate(zoom) {
       this.currentZoom = zoom;
     },
